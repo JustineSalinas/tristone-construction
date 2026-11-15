@@ -203,11 +203,26 @@ export const galleryProjects = [
   {
     name: "Project Cleo",
     location: "Capitol Village Subd., Bacolod City",
-    description: "Proposed 4 Bedroom Two Storey Residential House",
+    description:
+      "“It is finished.” Turnover Ceremony: after 7 months of hard work, this 4-bedroom, 2-storey residential home has come to completion.",
     images: [
+      "/images/projects/cleo-turnover-house.jpg",
+      "/images/projects/cleo-turnover-ribbon.jpg",
+      "/images/projects/cleo-turnover-family.jpg",
+      "/images/projects/cleo-turnover-certificate.jpg",
       "/images/projects/472087703_122102714696708590_4864336647551394302_n.jpg",
       "/images/projects/487338575_122121150482708590_633305262725555145_n.jpg",
       "/images/projects/514280061_122135027480708590_3234649125614910440_n.jpg",
+    ],
+  },
+  {
+    name: "Project Gamboa",
+    location: "St. Paul's Village, Talisay City, Negros Occidental",
+    description: "Groundbreaking Ceremony for a 4 Bedroom, 2 Storey Residential House.",
+    images: [
+      "/images/projects/gamboa-groundbreaking-group-b.jpg",
+      "/images/projects/gamboa-groundbreaking-group-a.jpg",
+      "/images/projects/gamboa-groundbreaking-details.jpg",
     ],
   },
   {
