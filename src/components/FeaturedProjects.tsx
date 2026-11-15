@@ -31,36 +31,22 @@ export default function FeaturedProjects() {
 
         <div className="mt-14 flex flex-col gap-20">
           {featuredProjects.map((project, idx) => (
-            <Reveal
-              key={project.slug}
+            <Reveal key={project.slug} className="flex flex-col">
+            <div
               className={`grid grid-cols-1 gap-0 lg:grid-cols-2 ${
                 idx % 2 === 1 ? "lg:[&>*:first-child]:order-2" : ""
               }`}
             >
-              <div className="flex flex-col gap-4">
-                <div className="border-[8px] border-molave-raised bg-molave-raised p-2 sm:border-[12px]">
-                  <div className="relative aspect-[3/4] w-full overflow-hidden">
-                    <Image
-                      src={project.image}
-                      alt={project.name}
-                      fill
-                      sizes="(max-width: 1024px) 100vw, 50vw"
-                      className="object-contain"
-                    />
-                  </div>
+              <div className="border-[8px] border-molave-raised bg-molave-raised p-2 sm:border-[12px]">
+                <div className="relative aspect-[3/4] w-full overflow-hidden">
+                  <Image
+                    src={project.image}
+                    alt={project.name}
+                    fill
+                    sizes="(max-width: 1024px) 100vw, 50vw"
+                    className="object-contain"
+                  />
                 </div>
-
-                {"video" in project && project.video && (
-                  <div className="border-[8px] border-molave-raised bg-molave-raised p-2 sm:border-[12px]">
-                    <video
-                      src={project.video}
-                      controls
-                      playsInline
-                      preload="metadata"
-                      className="aspect-video w-full bg-iron"
-                    />
-                  </div>
-                )}
               </div>
 
               <div className="flex flex-col bg-capiz p-7 sm:p-10">
@@ -106,6 +92,19 @@ export default function FeaturedProjects() {
                   </p>
                 </div>
               </div>
+            </div>
+
+            {"video" in project && project.video && (
+              <div className="border-[8px] border-t-0 border-molave-raised bg-molave-raised p-2 sm:border-[12px] sm:border-t-0">
+                <video
+                  src={project.video}
+                  controls
+                  playsInline
+                  preload="metadata"
+                  className="aspect-video w-full bg-iron"
+                />
+              </div>
+            )}
             </Reveal>
           ))}
 
