@@ -17,19 +17,17 @@ export default function InternationalClients() {
 
         <Reveal className="mt-10 grid grid-cols-1 divide-y divide-ember-dim/15 border-y border-ember-dim/20 sm:grid-cols-3 sm:divide-x sm:divide-y-0">
           {internationalClients.map((c) => (
-            <div key={c.name} className="flex flex-col gap-3 px-1 py-6 sm:px-6">
-              <div className="flex items-center gap-2">
-                <span className="text-xl" aria-hidden="true">
-                  {c.flag}
-                </span>
-                <h3 className="font-display text-lg font-bold text-capiz">
-                  {c.name}
-                </h3>
-              </div>
+            <div key={c.name} className="flex flex-col gap-1 px-1 py-6 sm:px-6">
+              <span className="text-2xl" aria-hidden="true">
+                {c.flag}
+              </span>
+              <h3 className="mt-1 font-display text-lg font-bold text-capiz">
+                {c.name}
+              </h3>
               <p className="text-xs uppercase tracking-wide text-ember-light">
                 {c.type}
               </p>
-              <p className="text-sm text-capiz-dim/70">{c.location}</p>
+              <p className="mt-2 text-sm text-capiz-dim/70">{c.location}</p>
               <dl className="mt-1 space-y-1 text-xs text-capiz-dim/60">
                 <div className="flex justify-between gap-2">
                   <dt>Lot Area</dt>

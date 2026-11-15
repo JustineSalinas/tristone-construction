@@ -18,8 +18,8 @@ export default function Home() {
       <Navbar />
       <main className="flex-1">
         <Hero />
-        <FeaturedProjects />
         <InternationalClients />
+        <FeaturedProjects />
         <Gallery />
         <Projects2025 />
         <Videos />
