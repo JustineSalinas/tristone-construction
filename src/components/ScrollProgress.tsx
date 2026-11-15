@@ -21,7 +21,7 @@ export default function ScrollProgress() {
   }, []);
 
   return (
-    <div className="fixed left-0 top-0 z-[60] h-[3px] w-full bg-molave-deep/60">
+    <div className="pointer-events-none fixed left-0 top-0 z-[60] h-[3px] w-full">
       <div
         className="h-full bg-gradient-to-r from-ember-dim via-ember to-ember-light transition-[width] duration-150 ease-out"
         style={{ width: `${progress * 100}%` }}

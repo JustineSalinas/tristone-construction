@@ -74,7 +74,7 @@ export default function Footer() {
           fill
           className="object-cover"
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-molave-deep via-molave-deep/60 to-molave-deep/80" />
+        <div className="absolute inset-0 bg-gradient-to-b from-molave-deep/70 via-transparent to-molave-deep" />
 
         <Reveal
           as="div"
