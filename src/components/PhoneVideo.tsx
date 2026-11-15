@@ -2,6 +2,9 @@
 
 import { useEffect, useRef, useState } from "react";
 
+// Only one video plays at a time, site-wide, to keep playback smooth on low-power devices.
+let activeVideo: HTMLVideoElement | null = null;
+
 export default function PhoneVideo({
   src,
   caption,
@@ -11,24 +14,45 @@ export default function PhoneVideo({
 }) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [muted, setMuted] = useState(true);
+  const [shouldLoad, setShouldLoad] = useState(false);
 
   useEffect(() => {
     const video = videoRef.current;
     if (!video) return;
 
-    const observer = new IntersectionObserver(
+    const loadObserver = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
+          setShouldLoad(true);
+          loadObserver.disconnect();
+        }
+      },
+      { rootMargin: "300px" }
+    );
+    loadObserver.observe(video);
+
+    const playObserver = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          if (activeVideo && activeVideo !== video) {
+            activeVideo.pause();
+          }
+          activeVideo = video;
           video.play().catch(() => {});
         } else {
           video.pause();
+          if (activeVideo === video) activeVideo = null;
         }
       },
       { threshold: 0.6 }
     );
+    playObserver.observe(video);
 
-    observer.observe(video);
-    return () => observer.disconnect();
+    return () => {
+      loadObserver.disconnect();
+      playObserver.disconnect();
+      if (activeVideo === video) activeVideo = null;
+    };
   }, []);
 
   return (
@@ -38,11 +62,11 @@ export default function PhoneVideo({
         <div className="relative h-full w-full overflow-hidden rounded-[2rem] bg-molave-deep">
           <video
             ref={videoRef}
-            src={src}
+            src={shouldLoad ? src : undefined}
             muted={muted}
             loop
             playsInline
-            preload="metadata"
+            preload="none"
             className="h-full w-full object-cover"
           />
           {/* Dynamic island */}
