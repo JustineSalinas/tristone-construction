@@ -2,6 +2,7 @@ import Image from "next/image";
 import { siteInfo } from "@/lib/content";
 import { FretworkDivider } from "./Fretwork";
 import { FacebookIcon } from "./icons";
+import FooterWordmark from "./FooterWordmark";
 import Reveal from "./Reveal";
 
 const columns = [
@@ -66,36 +67,31 @@ const columns = [
 export default function Footer() {
   return (
     <footer className="border-t border-ember-dim/40 bg-iron">
-      {/* Dramatic banner */}
-      <div className="relative flex min-h-[70vh] w-full flex-col justify-between overflow-hidden bg-iron py-14">
-        <Image
-          src="/images/projects/673759551_122164078016708590_8331368798484395051_n.jpg"
-          alt=""
-          fill
-          className="object-cover"
-        />
-        <div className="absolute inset-0 bg-gradient-to-b from-iron/70 via-transparent to-iron" />
-
-        <Reveal
-          as="div"
-          className="relative z-10 mx-auto max-w-2xl px-5 text-center"
+      {/* Dramatic banner: pure-black zone up top, photo only revealed lower down */}
+      <div className="relative flex min-h-[80vh] w-full flex-col justify-between overflow-hidden bg-iron py-14">
+        <div
+          className="absolute inset-0"
+          style={{
+            maskImage:
+              "linear-gradient(180deg, transparent 0%, transparent 32%, rgba(0,0,0,0.6) 48%, #000 62%, #000 78%, rgba(0,0,0,0.5) 90%, transparent 100%)",
+            WebkitMaskImage:
+              "linear-gradient(180deg, transparent 0%, transparent 32%, rgba(0,0,0,0.6) 48%, #000 62%, #000 78%, rgba(0,0,0,0.5) 90%, transparent 100%)",
+          }}
         >
-          <p className="font-display text-lg italic leading-snug text-capiz/90 sm:text-xl">
-            &ldquo;Unless the Lord builds the house, those who build it labor
-            in vain.&rdquo;
-          </p>
-          <cite className="mt-2 block text-xs font-semibold not-italic tracking-[0.2em] text-ember-light">
-            PSALM 127:1
-          </cite>
+          <Image
+            src="/images/herosection.jpg"
+            alt=""
+            fill
+            quality={100}
+            sizes="100vw"
+            className="object-cover object-[50%_40%]"
+          />
+        </div>
+        <div className="absolute inset-0 bg-gradient-to-b from-iron/5 via-transparent to-iron/55" />
+
+        <Reveal as="div" className="relative z-10 w-full px-5">
+          <FooterWordmark />
         </Reveal>
-
-        <h2
-          aria-hidden="true"
-          className="relative z-10 w-full select-none text-center font-display font-medium uppercase leading-[0.8] tracking-[-0.03em] text-capiz/90"
-          style={{ fontSize: "clamp(3rem, 15vw, 10rem)" }}
-        >
-          TRISTONE
-        </h2>
 
         <div className="relative z-10 flex justify-center">
           <a

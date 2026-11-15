@@ -1,8 +1,13 @@
 import { featuredProjects, canadaProject } from "@/lib/content";
 import { FretworkDivider } from "./Fretwork";
-import Reveal from "./Reveal";
 import ProjectSlider from "./ProjectSlider";
+import Reveal from "./Reveal";
 import type { ShowcaseProject } from "./project-types";
+
+const croppedPhotos: Record<string, string> = {
+  gamboa: "/images/projects/gamboa-photo.jpg",
+  blessed: "/images/projects/blessed-photo.jpg",
+};
 
 const projects: ShowcaseProject[] = [
   ...featuredProjects.map((p) => ({
@@ -10,8 +15,8 @@ const projects: ShowcaseProject[] = [
     name: p.name,
     flag: p.flag,
     location: p.location,
-    cover: p.image,
-    images: [p.image],
+    cover: croppedPhotos[p.slug] ?? p.image,
+    images: [croppedPhotos[p.slug] ?? p.image],
     verse: p.note ? `${p.note} ${p.verse}` : p.verse,
     status: "Rising",
     type: "Residential",

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import type { ShowcaseProject } from "./project-types";
 
@@ -12,7 +12,7 @@ function Tags({ title, items }: { title: string; items: string[] }) {
         {items.map((item) => (
           <li
             key={item}
-            className="rounded-full border border-iron/15 px-2.5 py-1 text-xs text-iron/80"
+            className="cursor-default rounded-full border border-iron/15 px-2.5 py-1 text-xs text-iron/80 transition-all duration-200 ease-out hover:-translate-y-0.5 hover:border-ember/60 hover:text-iron hover:shadow-[0_6px_16px_-10px_rgba(0,0,0,0.3)]"
           >
             {item}
           </li>
@@ -32,10 +32,19 @@ export default function ProjectModal({
   onClose: () => void;
 }) {
   const [imgIndex, setImgIndex] = useState(0);
+  const thumbRefs = useRef<(HTMLButtonElement | null)[]>([]);
 
   useEffect(() => {
     setImgIndex(0);
   }, [project]);
+
+  useEffect(() => {
+    thumbRefs.current[imgIndex]?.scrollIntoView({
+      behavior: "smooth",
+      inline: "center",
+      block: "nearest",
+    });
+  }, [imgIndex]);
 
   useEffect(() => {
     if (!project) return;
@@ -133,6 +142,9 @@ export default function ProjectModal({
             {project.images.map((src, i) => (
               <button
                 key={src}
+                ref={(el) => {
+                  thumbRefs.current[i] = el;
+                }}
                 type="button"
                 aria-label={`Show photo ${i + 1}`}
                 onClick={() => setImgIndex(i)}

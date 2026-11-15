@@ -135,6 +135,10 @@ export default function DragMarquee({
       onPointerUp={endDrag}
       onPointerLeave={() => {
         if (stateRef.current.dragging) endDrag();
+        stateRef.current.paused = false;
+      }}
+      onPointerEnter={() => {
+        if (!stateRef.current.dragging) stateRef.current.paused = true;
       }}
       className="no-scrollbar cursor-grab overflow-hidden active:cursor-grabbing"
     >

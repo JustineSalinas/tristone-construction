@@ -7,7 +7,7 @@ import { getGsap } from "@/lib/gsapClient";
 
 // A premium, muted burnt-orange, distinct from both the old neon-orange
 // brand accent and Tier One's warm timber/gold palette.
-const BURNT = "#D9531F";
+const BURNT = "#C2410C";
 const BURNT_LIGHT = "#F08A52";
 const DUR = 7000;
 
@@ -68,7 +68,7 @@ export default function Hero() {
     <section
       id="top"
       ref={sectionRef}
-      className="relative flex min-h-[100svh] w-full flex-col bg-capiz"
+      className="relative flex min-h-[calc(100svh-70px)] w-full flex-col bg-capiz"
     >
       {/* Photo stage: fills the rest of the section so the dark gradient reaches all the way to the foot copy */}
       <div className="relative z-0 w-full min-h-[560px] flex-1">
@@ -97,6 +97,8 @@ export default function Hero() {
                   alt=""
                   fill
                   priority={i === 0}
+                  quality={95}
+                  sizes="100vw"
                   className="object-cover object-[50%_28%]"
                 />
               </div>
@@ -116,7 +118,7 @@ export default function Hero() {
           >
             Tristone
           </p>
-          <p className="mt-3 font-display text-sm italic text-iron/70 sm:mt-4 sm:text-base">
+          <p className="mt-5 font-display text-sm italic text-iron/70 sm:mt-6 sm:text-base">
             Quality beyond promises.
           </p>
         </div>

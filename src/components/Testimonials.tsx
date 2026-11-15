@@ -24,7 +24,16 @@ function TestimonialPlaque({
   text: string;
 }) {
   return (
-    <div className="flex w-[340px] shrink-0 flex-col gap-3 border border-ember-dim/30 bg-capiz p-6 select-none sm:w-[400px]">
+    <div className="group relative flex w-[340px] shrink-0 flex-col gap-3 overflow-hidden border border-iron/15 bg-capiz p-6 shadow-[0_8px_24px_-12px_rgba(0,0,0,0.18)] transition-all duration-300 ease-out select-none hover:-translate-y-1 hover:border-ember/40 hover:shadow-[0_20px_40px_-16px_rgba(0,0,0,0.25)] sm:w-[400px]">
+      <svg
+        viewBox="0 0 32 32"
+        aria-hidden="true"
+        className="pointer-events-none absolute -right-1 -top-1 h-14 w-14 text-ember/[0.08] transition-colors duration-300 group-hover:text-ember/[0.14]"
+        fill="currentColor"
+      >
+        <path d="M3 18c0-6 4-10 10-11l1 3c-4 1-6 3-6 6h5v8H3v-6Zm15 0c0-6 4-10 10-11l1 3c-4 1-6 3-6 6h5v8H18v-6Z" />
+      </svg>
+
       <div className="flex items-center gap-3">
         <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-ember/40 bg-iron font-display text-sm font-bold text-capiz">
           {initials(name)}
@@ -43,7 +52,7 @@ function TestimonialPlaque({
         ))}
       </div>
 
-      <p className="line-clamp-6 text-sm leading-relaxed text-iron/85">
+      <p className="relative line-clamp-6 text-sm leading-relaxed text-iron/85">
         {text}
       </p>
     </div>

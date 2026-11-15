@@ -1,5 +1,5 @@
 import { projects2025, projects2025Previews } from "@/lib/content";
-import { DiamondBullet, FretworkDivider } from "./Fretwork";
+import { FretworkDivider } from "./Fretwork";
 import Reveal from "./Reveal";
 import ProjectGrid from "./ProjectGrid";
 import type { ShowcaseProject } from "./project-types";
@@ -42,16 +42,21 @@ export default function Projects2025() {
         <ProjectGrid projects={projects} sectionLabel="2025 LINEUP" />
 
         {unphotographed.length > 0 && (
-          <Reveal className="mt-10 grid grid-cols-1 gap-x-10 gap-y-2 border-t border-ember-dim/20 pt-6 sm:grid-cols-2">
-            {unphotographed.map((p) => (
-              <div key={p.name} className="flex items-start gap-2.5 py-1.5 text-sm">
-                <DiamondBullet className="mt-1.5 text-ember-light" />
-                <div>
+          <Reveal className="mt-10 border-t border-ember-dim/20 pt-6">
+            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-ember-dim">
+              Also Breaking Ground This Year
+            </p>
+            <div className="mt-4 flex flex-wrap gap-2.5">
+              {unphotographed.map((p) => (
+                <span
+                  key={p.name}
+                  className="cursor-default rounded-full border border-iron/15 bg-capiz px-4 py-2 text-sm text-iron/85 transition-all duration-200 ease-out hover:-translate-y-0.5 hover:border-ember/50 hover:shadow-[0_8px_20px_-10px_rgba(0,0,0,0.25)]"
+                >
                   <span className="font-display font-bold text-iron">{p.name}</span>
-                  <span className="text-iron/70"> &mdash; {p.location}</span>
-                </div>
-              </div>
-            ))}
+                  <span className="text-iron/60"> &mdash; {p.location}</span>
+                </span>
+              ))}
+            </div>
           </Reveal>
         )}
 

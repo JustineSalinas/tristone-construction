@@ -107,7 +107,7 @@ export default function Navbar() {
           href="#contact"
           className="hidden items-center gap-2 rounded-full bg-iron py-1.5 pl-4 pr-1.5 text-sm font-medium text-capiz transition-colors hover:bg-iron/90 md:inline-flex"
         >
-          Free Consultation
+          Start Your Build
           <span className="flex h-7 w-7 items-center justify-center rounded-full bg-ember">
             <svg viewBox="0 0 24 24" className="h-3.5 w-3.5 text-white" fill="none" stroke="currentColor" strokeWidth="2.5">
               <path d="M7 17 17 7M9 7h8v8" />
@@ -151,7 +151,7 @@ export default function Navbar() {
             onClick={() => setOpen(false)}
             className="mt-2 flex items-center justify-center gap-2 rounded-full bg-ember px-5 py-2.5 text-center text-sm font-bold text-white"
           >
-            Free Consultation &rarr;
+            Start Your Build &rarr;
           </a>
           <a
             href={`tel:${siteInfo.phone.replace(/-/g, "")}`}

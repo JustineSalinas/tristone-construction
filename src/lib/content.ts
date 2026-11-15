@@ -244,7 +244,6 @@ export const galleryProjects = [
       "/images/projects/cleo-turnover-certificate.jpg",
       "/images/projects/cleo-living-top.jpg",
       "/images/projects/cleo-kitchen-top.jpg",
-      "/images/projects/cleo-living-bottom.jpg",
       "/images/projects/cleo-kitchen-bottom.jpg",
       "/images/projects/472087703_122102714696708590_4864336647551394302_n.jpg",
       "/images/projects/487338575_122121150482708590_633305262725555145_n.jpg",
