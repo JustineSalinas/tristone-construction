@@ -122,13 +122,22 @@ export default function Footer() {
         <FretworkDivider className="mx-auto mt-10 max-w-xs text-ember-dim" />
 
         <div className="mt-10 flex flex-col items-center justify-between gap-4 sm:flex-row">
-          <div className="text-center sm:text-left">
-            <p className="font-display text-lg font-bold leading-none text-capiz">
-              TRISTONE
-            </p>
-            <p className="text-xs uppercase tracking-[0.25em] text-capiz-dim/60">
-              Construction
-            </p>
+          <div className="flex items-center gap-3">
+            <Image
+              src="/brand/logo-mark.png"
+              alt=""
+              width={32}
+              height={32}
+              className="h-8 w-8 object-contain"
+            />
+            <div className="text-center sm:text-left">
+              <p className="font-display text-lg font-bold leading-none text-capiz">
+                TRISTONE
+              </p>
+              <p className="text-xs uppercase tracking-[0.25em] text-capiz-dim/60">
+                Construction
+              </p>
+            </div>
           </div>
           <p className="text-center text-xs text-capiz-dim/40 sm:text-right">
             &copy; 2026 Tristone Construction. Quality Beyond Promises.
