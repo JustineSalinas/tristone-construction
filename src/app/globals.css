@@ -1,26 +1,165 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --molave: #1b1611;
+  --molave-deep: #120e0a;
+  --molave-raised: #2a211a;
+  --capiz: #f5f1eb;
+  --capiz-dim: #ddd4c7;
+  --iron: #1b1611;
+  --ember: #a07a55;
+  --ember-light: #c9a47a;
+  --ember-dim: #6e5138;
+
+  --background: var(--molave);
+  --foreground: var(--capiz);
 }
 
 @theme inline {
+  --color-molave: var(--molave);
+  --color-molave-deep: var(--molave-deep);
+  --color-molave-raised: var(--molave-raised);
+  --color-capiz: var(--capiz);
+  --color-capiz-dim: var(--capiz-dim);
+  --color-iron: var(--iron);
+  --color-ember: var(--ember);
+  --color-ember-light: var(--ember-light);
+  --color-ember-dim: var(--ember-dim);
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-display: var(--font-besley);
+  --font-sans: var(--font-albert);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+html {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+html::-webkit-scrollbar {
+  display: none;
+}
+
+.no-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.video-item {
+  transition: filter 350ms ease, opacity 350ms ease, transform 350ms ease;
+  will-change: filter, transform;
+}
+
+.video-grid:has(.video-item:hover) .video-item:not(:hover) {
+  filter: blur(6px) brightness(0.55);
+  opacity: 0.8;
+  transform: scale(0.96);
+}
+
+.video-grid .video-item:hover {
+  transform: scale(1.04);
+  z-index: 10;
+}
+
+@media (hover: none) {
+  .video-grid:has(.video-item:hover) .video-item:not(:hover) {
+    filter: none;
+    opacity: 1;
+    transform: none;
   }
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+}
+
+::selection {
+  background: var(--ember);
+  color: var(--molave-deep);
+}
+
+a,
+button {
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+
+:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--molave-deep), 0 0 0 4px var(--ember-light);
+}
+
+.no-focus-ring:focus-visible {
+  box-shadow: inherit;
+}
+
+.fretwork-divider {
+  display: block;
+  width: 100%;
+  height: 28px;
+  color: var(--ember-dim);
+}
+
+.inscription {
+  font-variant-numeric: oldstyle-nums;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .reveal {
+    opacity: 0;
+    transform: translateY(14px);
+    animation: reveal-in 0.9s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+}
+
+@keyframes reveal-in {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.marquee-track {
+  display: flex;
+  width: max-content;
+  animation: marquee-left 70s linear infinite;
+}
+
+.marquee-track-reverse {
+  display: flex;
+  width: max-content;
+  animation: marquee-right 70s linear infinite;
+}
+
+@keyframes marquee-left {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes marquee-right {
+  from {
+    transform: translateX(-50%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .marquee-track,
+  .marquee-track-reverse,
+  .reveal {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
 }
