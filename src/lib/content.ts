@@ -72,6 +72,7 @@ export const featuredProjects = [
   {
     slug: "gamboa",
     name: "Project Gamboa",
+    flag: "🇦🇪",
     headline: "A New Home Is Set to Rise in the North",
     location: "St. Paul's Village, Talisay City, Negros Occidental",
     verse: "“He hath made every thing beautiful in his time.” (Ecclesiastes 3:11)",
@@ -112,11 +113,12 @@ export const featuredProjects = [
   {
     slug: "blessed",
     name: "Project Blessed",
+    flag: "🇦🇺",
     headline: "Now Rising in the South",
     location: "South Bay Subdivision Phase 3, Bago City",
     verse:
       "“Every good gift and every perfect gift is from above, and cometh down from the Father of lights.” (James 1:17)",
-    note: "Our heartfelt gratitude to Mr. Homer and Ma'am Rosalie Idangga for entrusting us with your dream home.",
+    note: "Our heartfelt gratitude to this wonderful family for entrusting us with your dream home.",
     image: "/images/projects/901545680_122180486000708590_4509042024575549693_n.jpg",
     video: "/videos/video-project-blessed.mp4",
     stats: [
@@ -162,6 +164,36 @@ export const featuredProjects = [
       "Enhanced Ceiling Designs for the Living and Dining Areas",
     ],
     freebies: ["Pest Control Treatment", "Occupancy Permit Processing"],
+  },
+];
+
+export const internationalClients = [
+  {
+    name: "Project Blessed",
+    flag: "🇦🇺",
+    location: "South Bay Subd., Bago City",
+    type: "Luxury Finish Residential",
+    lotArea: "700 sqm",
+    interiorArea: "361 sqm",
+    exteriorArea: "148.51 sqm",
+  },
+  {
+    name: "Project Gamboa",
+    flag: "🇦🇪",
+    location: "St. Paul's Village, Talisay City",
+    type: "Semi-Elegant Residential",
+    lotArea: "480 sqm",
+    interiorArea: "141.02 sqm",
+    exteriorArea: "37.92 sqm",
+  },
+  {
+    name: "Project Iceaz",
+    flag: "🇫🇷",
+    location: "Villa Alexandra Subd., Bacolod City",
+    type: "2-Unit Apartment",
+    lotArea: "115 sqm",
+    interiorArea: "144.66 sqm",
+    exteriorArea: "34.66 sqm",
   },
 ];
 
@@ -223,6 +255,16 @@ export const galleryProjects = [
       "/images/projects/gamboa-groundbreaking-group-b.jpg",
       "/images/projects/gamboa-groundbreaking-group-a.jpg",
       "/images/projects/gamboa-groundbreaking-details.jpg",
+    ],
+  },
+  {
+    name: "Project Savinnah",
+    location: "Manville Royale Subd., Bacolod City",
+    description:
+      "Now Rising: a 2-storey, 3-bedroom residential house. After 12 weeks of planning, meetings, and processing, we're set to begin right on our target timeline.",
+    images: [
+      "/images/projects/savinnah-exterior-day.jpg",
+      "/images/projects/savinnah-exterior-dusk.jpg",
     ],
   },
   {
