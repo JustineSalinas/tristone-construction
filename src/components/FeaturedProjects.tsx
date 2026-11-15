@@ -63,12 +63,15 @@ export default function FeaturedProjects() {
                 )}
               </div>
 
-              <div className="flex flex-col justify-center bg-capiz p-7 sm:p-10">
+              <div className="flex flex-col bg-capiz p-7 sm:p-10">
                 <p className="text-xs font-semibold uppercase tracking-[0.18em] text-ember-dim">
                   {project.headline}
                 </p>
-                <h3 className="mt-1 font-display text-2xl font-extrabold text-iron">
+                <h3 className="mt-1 flex items-center gap-2 font-display text-2xl font-extrabold text-iron">
                   {project.name}
+                  {"flag" in project && (
+                    <span aria-hidden="true">{project.flag}</span>
+                  )}
                 </h3>
                 <p className="mt-1 text-sm text-iron/70">{project.location}</p>
                 <p className="mt-3 border-l-[3px] border-ember pl-3 font-display text-sm italic text-ember-dim">
@@ -118,7 +121,7 @@ export default function FeaturedProjects() {
                 />
               </div>
             </div>
-            <div className="flex flex-col justify-center bg-capiz p-7 sm:p-10">
+            <div className="flex flex-col bg-capiz p-7 sm:p-10">
               <p className="text-xs font-semibold uppercase tracking-[0.18em] text-ember-dim">
                 {canadaProject.headline}
               </p>
