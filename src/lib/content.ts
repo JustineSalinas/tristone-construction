@@ -268,3 +268,43 @@ export const financingHighlights = {
   services:
     "Renovation, extension, estimate, consultancy, repairs, fencing, interior design, condo fit-outs, improvements and all other construction services.",
 };
+
+export const projects2025 = [
+  { name: "Project Cleo", location: "Capitol Village, Brgy. Granada, Bacolod City" },
+  { name: "Project Amarra Faith", location: "Brgy. Pacol, Bago City" },
+  { name: "Project Raphael", location: "La Alegria Subd., Silay City" },
+  { name: "Project Faith", location: "Alimodian, Iloilo" },
+  { name: "Project Solinap", location: "Brgy. Alijis, Bacolod City" },
+  { name: "Project Illuminate (Rest House / Villa)", location: "Brgy. Villamonte, Bacolod City" },
+  { name: "Sumiguin Kitchen Renovation", location: "Country Homes, Dos Hermanas" },
+];
+
+export const projects2025Previews = [
+  { src: "/images/projects/2025-cleo-a.jpg", project: "Project Cleo" },
+  { src: "/images/projects/2025-amarra-faith-a.jpg", project: "Project Amarra Faith" },
+  { src: "/images/projects/2025-raphael-a.jpg", project: "Project Raphael" },
+  { src: "/images/projects/2025-cleo-b.jpg", project: "Project Cleo" },
+  { src: "/images/projects/2025-amarra-faith-b.jpg", project: "Project Amarra Faith" },
+  { src: "/images/projects/2025-raphael-b.jpg", project: "Project Raphael" },
+  { src: "/images/projects/2025-cleo-c.jpg", project: "Project Cleo" },
+  { src: "/images/projects/2025-preview-a.jpg", project: "2025 Lineup" },
+  { src: "/images/projects/2025-preview-b.jpg", project: "2025 Lineup" },
+];
+
+export const hiring = {
+  role: "Draftsman",
+  intro:
+    "Tristone Construction is looking for a Draftsman to join our growing team. If you have a strong eye for detail, are skilled in planning, design, and 3D rendering, and can work with minimal supervision, this role might be for you.",
+  qualifications: [
+    "Preferably with at least two (2) years of working experience",
+    "Proficient in 3D rendering",
+    "Knowledgeable in interior design",
+    "Strong attention to detail",
+    "Skilled in planning and design",
+    "Able to work with less supervision",
+    "Creative and detail-oriented",
+    "WFH setup (temporarily)",
+    "A good team player",
+  ],
+  cta: "Send your resume with attached portfolio/sample works to tristoneconstruction123@gmail.com",
+};
