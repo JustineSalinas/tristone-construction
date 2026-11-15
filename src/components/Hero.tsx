@@ -78,7 +78,8 @@ export default function Hero() {
       <h1
         ref={wordmarkRef}
         aria-hidden="true"
-        className="pointer-events-none absolute left-1/2 top-[8%] w-[110%] -translate-x-1/2 select-none text-center font-display text-[17vw] font-extrabold italic leading-none tracking-tight text-capiz/85 mix-blend-plus-lighter sm:text-[13vw]"
+        className="pointer-events-none absolute left-1/2 top-[8%] w-[110%] -translate-x-1/2 select-none text-center font-display font-extrabold italic leading-none tracking-tight text-capiz/85 mix-blend-plus-lighter"
+        style={{ fontSize: "clamp(3.25rem, 13vw, 11.5rem)" }}
       >
         TRISTONE
       </h1>
