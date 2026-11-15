@@ -17,7 +17,7 @@ export default function Navbar() {
   const [open, setOpen] = useState(false);
 
   return (
-    <header className="sticky top-0 z-50 bg-molave-deep">
+    <header className="sticky top-0 z-50 border-b border-ember-dim/15 bg-molave-deep">
       <div className="flex w-full items-center justify-between gap-8 px-5 py-4 sm:px-8 lg:px-12 xl:px-16">
         <a href="#top" className="flex items-center gap-3">
           <Image
@@ -74,18 +74,6 @@ export default function Navbar() {
           <span className="h-0.5 w-6 bg-capiz" />
           <span className="h-0.5 w-6 bg-capiz" />
         </button>
-      </div>
-
-      {/* Meta strip */}
-      <div className="hidden border-y border-ember-dim/15 bg-molave-raised/40 md:block">
-        <div className="flex w-full items-center justify-between px-5 py-2 text-[11px] uppercase tracking-[0.15em] text-capiz-dim/60 sm:px-8 lg:px-12 xl:px-16">
-          <span>
-            Residential &amp; Commercial &middot; Bacolod &amp; Iloilo &middot; Quality Beyond Promises
-          </span>
-          <span className="font-display italic normal-case tracking-normal text-capiz-dim/50">
-            Build Now, Pay Later available
-          </span>
-        </div>
       </div>
 
       {open && (
