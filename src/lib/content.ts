@@ -262,6 +262,19 @@ export const galleryProjects = [
     ],
   },
   {
+    name: "Project Raphael",
+    location: "La Alegria Subdivision, Silay City, Negros Occidental",
+    description:
+      "From Soil to Reality: Groundbreaking Ceremony for Project Raphael, a 4 Bedroom, 2 Storey Residential House.",
+    images: [
+      "/images/projects/raphael-groundbreaking-group.jpg",
+      "/images/projects/raphael-groundbreaking-family.jpg",
+      "/images/projects/raphael-groundbreaking-team.jpg",
+      "/images/projects/raphael-groundbreaking-board.jpg",
+      "/images/projects/raphael-groundbreaking-details.jpg",
+    ],
+  },
+  {
     name: "Project Savinnah",
     location: "Manville Royale Subd., Bacolod City",
     description:
