@@ -89,7 +89,7 @@ export default function Hero() {
         ref={contentRef}
         className="relative z-10 mx-auto flex w-full max-w-6xl flex-col items-center gap-5 px-5 pb-16 text-center sm:px-8 sm:pb-24"
       >
-        <p className="max-w-md text-sm font-semibold uppercase tracking-[0.2em] text-ember-light sm:text-base">
+        <p className="whitespace-nowrap text-[11px] font-semibold uppercase tracking-[0.15em] text-ember-light sm:text-sm sm:tracking-[0.2em] md:text-base">
           Bacolod City &middot; Negros Occidental &middot; Iloilo City
         </p>
         <p className="max-w-lg text-lg text-capiz/90 sm:text-xl">
