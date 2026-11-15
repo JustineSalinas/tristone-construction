@@ -9,10 +9,10 @@ export default function Projects2025() {
     <section className="bg-molave-deep py-20">
       <div className="mx-auto max-w-6xl px-5 sm:px-8">
         <Reveal>
-          <h2 className="max-w-2xl font-display text-3xl font-extrabold text-capiz sm:text-4xl">
+          <h2 className="max-w-2xl font-display text-3xl font-extrabold text-iron sm:text-4xl">
             2025 Projects Are Rolling
           </h2>
-          <p className="mt-3 max-w-2xl text-capiz-dim/80">
+          <p className="mt-3 max-w-2xl text-iron/80">
             A look at the homes and renovations Tristone is building this
             year, from Bacolod to Iloilo.
           </p>
@@ -23,8 +23,8 @@ export default function Projects2025() {
             <div key={p.name} className="flex items-start gap-2.5 py-1.5 text-sm">
               <DiamondBullet className="mt-1.5 text-ember-light" />
               <div>
-                <span className="font-display font-bold text-capiz">{p.name}</span>
-                <span className="text-capiz-dim/70"> &mdash; {p.location}</span>
+                <span className="font-display font-bold text-iron">{p.name}</span>
+                <span className="text-iron/70"> &mdash; {p.location}</span>
               </div>
             </div>
           ))}

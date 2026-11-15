@@ -21,10 +21,10 @@ export default function Financing() {
     <section id="financing" className="bg-molave-deep py-20">
       <div className="mx-auto max-w-6xl px-5 sm:px-8">
         <Reveal>
-          <h2 className="max-w-2xl font-display text-3xl font-extrabold text-capiz sm:text-4xl">
+          <h2 className="max-w-2xl font-display text-3xl font-extrabold text-iron sm:text-4xl">
             We Offer Build Now, Pay Later
           </h2>
-          <p className="mt-3 max-w-xl text-capiz-dim/80">
+          <p className="mt-3 max-w-xl text-iron/80">
             Freebies worth almost{" "}
             <span className="font-display font-bold text-ember-light">
               {financingHighlights.freebiesValue}

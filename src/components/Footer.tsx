@@ -65,16 +65,16 @@ const columns = [
 
 export default function Footer() {
   return (
-    <footer className="border-t border-ember-dim/40 bg-molave-deep">
+    <footer className="border-t border-ember-dim/40 bg-iron">
       {/* Dramatic banner */}
-      <div className="relative flex min-h-[70vh] w-full flex-col justify-between overflow-hidden bg-molave-deep py-14">
+      <div className="relative flex min-h-[70vh] w-full flex-col justify-between overflow-hidden bg-iron py-14">
         <Image
           src="/images/projects/673759551_122164078016708590_8331368798484395051_n.jpg"
           alt=""
           fill
           className="object-cover"
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-molave-deep/70 via-transparent to-molave-deep" />
+        <div className="absolute inset-0 bg-gradient-to-b from-iron/70 via-transparent to-iron" />
 
         <Reveal
           as="div"
@@ -91,7 +91,8 @@ export default function Footer() {
 
         <h2
           aria-hidden="true"
-          className="relative z-10 w-full select-none text-center font-display text-[15vw] font-extrabold italic leading-none tracking-tight text-capiz/90 sm:text-[10vw]"
+          className="relative z-10 w-full select-none text-center font-display font-medium uppercase leading-[0.8] tracking-[-0.03em] text-capiz/90"
+          style={{ fontSize: "clamp(3rem, 15vw, 10rem)" }}
         >
           TRISTONE
         </h2>
@@ -99,7 +100,7 @@ export default function Footer() {
         <div className="relative z-10 flex justify-center">
           <a
             href={`tel:${siteInfo.phone.replace(/-/g, "")}`}
-            className="inline-flex items-center gap-2 border border-ember bg-ember px-8 py-3.5 font-display text-base font-bold text-molave-deep shadow-[0_15px_35px_-10px_rgba(160,122,85,0.5)] transition-colors hover:bg-ember-light"
+            className="inline-flex items-center gap-2 border border-ember bg-ember px-8 py-3.5 font-display text-base font-bold text-white shadow-[0_15px_35px_-10px_rgba(217,83,31,0.5)] transition-colors hover:bg-ember-light"
           >
             Call {siteInfo.phone}
           </a>

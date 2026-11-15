@@ -94,7 +94,7 @@ export default function PhoneVideo({
           </button>
         </div>
       </div>
-      <p className="text-center text-xs leading-relaxed text-capiz-dim/80">
+      <p className="text-center text-xs leading-relaxed text-iron/80">
         {caption}
       </p>
     </div>

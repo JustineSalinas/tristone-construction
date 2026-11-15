@@ -1,18 +1,21 @@
 @import "tailwindcss";
 
 :root {
-  --molave: #1b1611;
-  --molave-deep: #120e0a;
+  /* Light, ivory/creamy premium ground. "molave" now names the page's
+     light ivory tones; "molave-raised" stays dark on purpose, as the
+     carved hardwood frame/accent colour against the cream walls. */
+  --molave: #f7f3ec;
+  --molave-deep: #efe6d5;
   --molave-raised: #2a211a;
-  --capiz: #f5f1eb;
-  --capiz-dim: #ddd4c7;
+  --capiz: #fbf8f2;
+  --capiz-dim: #e8dcc4;
   --iron: #1b1611;
-  --ember: #a07a55;
-  --ember-light: #c9a47a;
-  --ember-dim: #6e5138;
+  --ember: #d9531f;
+  --ember-light: #f08a52;
+  --ember-dim: #8f3414;
 
   --background: var(--molave);
-  --foreground: var(--capiz);
+  --foreground: var(--iron);
 }
 
 @theme inline {
@@ -80,7 +83,7 @@ body {
 
 ::selection {
   background: var(--ember);
-  color: var(--molave-deep);
+  color: var(--capiz);
 }
 
 a,

@@ -18,10 +18,10 @@ export default function Videos() {
     <section className="bg-molave py-20">
       <div className="mx-auto max-w-6xl px-5 sm:px-8">
         <Reveal>
-          <h2 className="max-w-2xl font-display text-3xl font-extrabold text-capiz sm:text-4xl">
+          <h2 className="max-w-2xl font-display text-3xl font-extrabold text-iron sm:text-4xl">
             See the Builds in Motion
           </h2>
-          <p className="mt-3 max-w-2xl text-capiz-dim/80">
+          <p className="mt-3 max-w-2xl text-iron/80">
             Every clip plays on its own as it comes into view.
           </p>
         </Reveal>

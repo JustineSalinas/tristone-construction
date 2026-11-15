@@ -28,7 +28,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       lang="en"
       className={`${besley.variable} ${albertSans.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col bg-molave text-capiz font-sans">
+      <body className="min-h-full flex flex-col bg-molave text-iron font-sans">
         <ScrollProgress />
         {children}
       </body>

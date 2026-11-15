@@ -6,10 +6,10 @@ export default function InternationalClients() {
     <section className="bg-molave py-16">
       <div className="mx-auto max-w-6xl px-5 sm:px-8">
         <Reveal>
-          <h2 className="max-w-2xl font-display text-3xl font-extrabold text-capiz sm:text-4xl">
+          <h2 className="max-w-2xl font-display text-3xl font-extrabold text-iron sm:text-4xl">
             Trusted From Abroad
           </h2>
-          <p className="mt-3 max-w-2xl text-capiz-dim/80">
+          <p className="mt-3 max-w-2xl text-iron/80">
             Families overseas trusting Tristone to build their dream home back
             home.
           </p>
@@ -21,25 +21,25 @@ export default function InternationalClients() {
               <span className="text-2xl" aria-hidden="true">
                 {c.flag}
               </span>
-              <h3 className="mt-1 font-display text-lg font-bold text-capiz">
+              <h3 className="mt-1 font-display text-lg font-bold text-iron">
                 {c.name}
               </h3>
               <p className="text-xs uppercase tracking-wide text-ember-light">
                 {c.type}
               </p>
-              <p className="mt-2 text-sm text-capiz-dim/70">{c.location}</p>
-              <dl className="mt-1 space-y-1 text-xs text-capiz-dim/60">
+              <p className="mt-2 text-sm text-iron/70">{c.location}</p>
+              <dl className="mt-1 space-y-1 text-xs text-iron/60">
                 <div className="flex justify-between gap-2">
                   <dt>Lot Area</dt>
-                  <dd className="font-semibold text-capiz">{c.lotArea}</dd>
+                  <dd className="font-semibold text-iron">{c.lotArea}</dd>
                 </div>
                 <div className="flex justify-between gap-2">
                   <dt>Interior Area</dt>
-                  <dd className="font-semibold text-capiz">{c.interiorArea}</dd>
+                  <dd className="font-semibold text-iron">{c.interiorArea}</dd>
                 </div>
                 <div className="flex justify-between gap-2">
                   <dt>Exterior Area</dt>
-                  <dd className="font-semibold text-capiz">{c.exteriorArea}</dd>
+                  <dd className="font-semibold text-iron">{c.exteriorArea}</dd>
                 </div>
               </dl>
             </div>

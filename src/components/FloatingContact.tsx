@@ -28,37 +28,42 @@ const dockLinks = [
   {
     href: `mailto:${siteInfo.email}`,
     label: "Email",
+    detail: siteInfo.email,
     icon: MailIcon,
-    bg: "#ffffff",
-    fg: "#ea4335",
+    bg: "bg-capiz",
+    fg: "text-iron",
   },
   {
     href: `tel:${siteInfo.phone.replace(/-/g, "")}`,
     label: "Call",
+    detail: siteInfo.phone,
     icon: PhoneIcon,
-    bg: "#f5f1eb",
-    fg: "#1b1611",
+    bg: "bg-capiz",
+    fg: "text-iron",
   },
   {
     href: siteInfo.whatsappUrl,
     label: "WhatsApp",
+    detail: siteInfo.phone,
     icon: WhatsAppIcon,
-    bg: "#25d366",
-    fg: "#ffffff",
+    bg: "bg-[#25d366]",
+    fg: "text-white",
   },
   {
     href: siteInfo.viberUrl,
     label: "Viber",
+    detail: siteInfo.phone,
     icon: ViberIcon,
-    bg: "#7360f2",
-    fg: "#ffffff",
+    bg: "bg-[#7360f2]",
+    fg: "text-white",
   },
   {
     href: siteInfo.facebookUrl,
     label: "Facebook",
+    detail: `${siteInfo.followers} followers`,
     icon: FacebookIcon,
-    bg: "#1877f2",
-    fg: "#ffffff",
+    bg: "bg-[#1877f2]",
+    fg: "text-white",
   },
 ];
 
@@ -91,7 +96,7 @@ export default function FloatingContact() {
     <>
       {/* Contact dock */}
       <div
-        className="fixed bottom-24 right-4 z-40 flex max-h-[calc(100svh-9rem)] flex-col gap-2.5 overflow-y-auto no-scrollbar sm:right-6 sm:gap-3.5"
+        className="fixed bottom-24 right-4 z-40 flex flex-col gap-3 sm:right-6 sm:gap-3.5"
         style={{
           opacity: chatOpen ? 0 : 1,
           transform: chatOpen ? "translateY(8px) scale(0.95)" : "translateY(0) scale(1)",
@@ -99,24 +104,29 @@ export default function FloatingContact() {
           transition: `opacity 250ms ${EASE}, transform 250ms ${EASE}`,
         }}
       >
-        {dockLinks.map(({ href, label, icon: Icon, bg, fg }) => (
-          <a
-            key={label}
-            href={href}
-            target={href.startsWith("http") ? "_blank" : undefined}
-            rel={href.startsWith("http") ? "noopener noreferrer" : undefined}
-            aria-label={label}
-            style={{ backgroundColor: bg, color: fg }}
-            className="no-focus-ring flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-full shadow-[0_6px_16px_-4px_rgba(0,0,0,0.35)] transition-[transform,filter] duration-200 hover:-translate-y-1 hover:brightness-110 hover:shadow-[0_10px_20px_-6px_rgba(0,0,0,0.5)] sm:h-11 sm:w-11"
-          >
-            <Icon className="h-[1rem] w-[1rem] sm:h-[1.1rem] sm:w-[1.1rem]" />
-          </a>
+        {dockLinks.map(({ href, label, detail, icon: Icon, bg, fg }) => (
+          <div key={label} className="group relative flex items-center justify-end">
+            <span className="pointer-events-none absolute right-full mr-3 flex items-center gap-1.5 whitespace-nowrap rounded-full bg-iron px-4 py-2 text-xs font-medium text-capiz opacity-0 shadow-[0_10px_24px_-8px_rgba(0,0,0,0.35)] transition-opacity duration-200 group-hover:opacity-100">
+              {label}
+              <span className="text-capiz/50">&middot;</span>
+              {detail}
+            </span>
+            <a
+              href={href}
+              target={href.startsWith("http") ? "_blank" : undefined}
+              rel={href.startsWith("http") ? "noopener noreferrer" : undefined}
+              aria-label={label}
+              className={`no-focus-ring flex h-10 w-10 shrink-0 items-center justify-center rounded-full shadow-[0_8px_18px_-6px_rgba(0,0,0,0.2)] ring-1 ring-iron/10 transition-transform duration-200 ease-out hover:scale-110 sm:h-11 sm:w-11 ${bg} ${fg}`}
+            >
+              <Icon className="h-[1rem] w-[1rem] sm:h-[1.1rem] sm:w-[1.1rem]" />
+            </a>
+          </div>
         ))}
       </div>
 
       {/* Chat panel */}
       <div
-        className="fixed bottom-24 right-4 z-50 flex h-[min(29rem,calc(100svh-7rem))] w-[calc(100vw-2rem)] max-w-[22rem] origin-bottom-right flex-col overflow-hidden rounded-[1.75rem] bg-molave-deep shadow-[0_25px_60px_-15px_rgba(0,0,0,0.55)] ring-1 ring-ember-dim/20 sm:right-6"
+        className="fixed bottom-24 right-4 z-50 flex h-[min(29rem,calc(100svh-7rem))] w-[calc(100vw-2rem)] max-w-[22rem] origin-bottom-right flex-col overflow-hidden rounded-[1.75rem] bg-iron shadow-[0_25px_60px_-15px_rgba(0,0,0,0.55)] ring-1 ring-ember-dim/20 sm:right-6"
         style={{
           opacity: chatOpen ? 1 : 0,
           transform: chatOpen
@@ -126,9 +136,9 @@ export default function FloatingContact() {
           transition: `opacity 280ms ${EASE}, transform 280ms ${EASE}`,
         }}
       >
-        <div className="flex items-center justify-between border-b border-ember-dim/15 bg-molave-raised/60 px-5 py-4">
+        <div className="flex items-center justify-between border-b border-ember-dim/15 bg-molave-raised px-5 py-4">
           <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-molave-deep ring-1 ring-ember-dim/40">
+            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-iron ring-1 ring-ember-dim/40">
               <Image
                 src="/brand/logo-mark.png"
                 alt=""
@@ -163,7 +173,7 @@ export default function FloatingContact() {
               className={`max-w-[85%] px-4 py-3 text-sm leading-relaxed ${
                 m.from === "bot"
                   ? "rounded-2xl rounded-tl-sm bg-capiz text-iron"
-                  : "ml-auto rounded-2xl rounded-tr-sm bg-ember text-molave-deep"
+                  : "ml-auto rounded-2xl rounded-tr-sm bg-ember text-white"
               }`}
             >
               {m.text}
@@ -195,12 +205,12 @@ export default function FloatingContact() {
             value={input}
             onChange={(e) => setInput(e.target.value)}
             placeholder="Type your question..."
-            className="flex-1 rounded-full bg-molave-raised/70 px-4 py-2.5 text-sm text-capiz placeholder:text-capiz-dim/40 outline-none focus:ring-1 focus:ring-ember-dim/50"
+            className="flex-1 rounded-full bg-molave-raised px-4 py-2.5 text-sm text-capiz placeholder:text-capiz-dim/40 outline-none focus:ring-1 focus:ring-ember-dim/50"
           />
           <button
             type="submit"
             aria-label="Send"
-            className="no-focus-ring flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-ember text-molave-deep transition-colors hover:bg-ember-light"
+            className="no-focus-ring flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-ember text-white transition-colors hover:bg-ember-light"
           >
             <SendIcon className="h-4 w-4" />
           </button>
@@ -220,7 +230,7 @@ export default function FloatingContact() {
           <button
             type="button"
             onClick={() => setChatOpen(true)}
-            className="no-focus-ring flex h-14 items-center gap-1 whitespace-nowrap rounded-full bg-capiz py-2 pl-5 pr-16 text-sm shadow-[0_10px_24px_-8px_rgba(0,0,0,0.3)] transition-transform duration-200 hover:scale-[1.02]"
+            className="no-focus-ring flex h-14 cursor-pointer items-center gap-1 whitespace-nowrap rounded-full bg-capiz py-2 pl-5 pr-16 text-sm shadow-[0_10px_24px_-8px_rgba(0,0,0,0.25)] ring-1 ring-iron/10 transition-transform duration-200 hover:scale-[1.02]"
           >
             <span className="font-display font-semibold text-ember">
               Ask Us Anything
@@ -232,7 +242,7 @@ export default function FloatingContact() {
               type="button"
               onClick={() => setChatOpen(true)}
               aria-label="Open chat"
-              className="no-focus-ring pointer-events-auto flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-ember-light to-ember text-molave-deep"
+              className="no-focus-ring pointer-events-auto flex h-12 w-12 cursor-pointer items-center justify-center rounded-full bg-gradient-to-br from-ember-light to-ember text-white"
             >
               <ChatIcon className="h-5 w-5" />
             </button>
@@ -249,7 +259,7 @@ export default function FloatingContact() {
             pointerEvents: chatOpen ? "auto" : "none",
             transition: `opacity 200ms ${EASE}, transform 200ms ${EASE}`,
           }}
-          className="no-focus-ring absolute right-0 top-0 flex h-12 w-12 items-center justify-center rounded-full bg-ember text-molave-deep shadow-[0_10px_24px_-8px_rgba(0,0,0,0.3)] hover:scale-105"
+          className="no-focus-ring absolute right-0 top-0 flex h-12 w-12 items-center justify-center rounded-full bg-ember text-white shadow-[0_10px_24px_-8px_rgba(0,0,0,0.3)] hover:scale-105"
         >
           <CloseIcon className="h-5 w-5" />
         </button>

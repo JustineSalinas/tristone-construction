@@ -57,10 +57,10 @@ export default function Testimonials() {
   return (
     <section id="testimonials" className="overflow-hidden bg-molave py-20">
       <Reveal className="mx-auto mb-12 max-w-6xl px-5 sm:px-8">
-        <h2 className="max-w-2xl font-display text-3xl font-extrabold text-capiz sm:text-4xl">
+        <h2 className="max-w-2xl font-display text-3xl font-extrabold text-iron sm:text-4xl">
           Families We&apos;ve Built For
         </h2>
-        <p className="mt-3 max-w-2xl text-capiz-dim/80">
+        <p className="mt-3 max-w-2xl text-iron/80">
           8.1K followers and counting, real words from families who trusted
           Tristone with their dream homes.
         </p>

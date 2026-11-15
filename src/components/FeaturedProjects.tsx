@@ -24,7 +24,7 @@ export default function FeaturedProjects() {
     <section className="bg-molave py-20">
       <div className="mx-auto max-w-6xl px-5 sm:px-8">
         <Reveal>
-          <h2 className="max-w-2xl font-display text-3xl font-extrabold text-capiz sm:text-4xl">
+          <h2 className="max-w-2xl font-display text-3xl font-extrabold text-iron sm:text-4xl">
             Homes Rising Right Now
           </h2>
         </Reveal>

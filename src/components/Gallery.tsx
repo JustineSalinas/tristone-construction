@@ -9,10 +9,10 @@ export default function Gallery() {
     <section id="projects" className="bg-molave-deep py-20">
       <div className="mx-auto max-w-6xl px-5 sm:px-8">
         <Reveal>
-          <h2 className="max-w-2xl font-display text-3xl font-extrabold text-capiz sm:text-4xl">
+          <h2 className="max-w-2xl font-display text-3xl font-extrabold text-iron sm:text-4xl">
             Completed &amp; Ongoing Builds
           </h2>
-          <p className="mt-3 max-w-2xl text-capiz-dim/80">
+          <p className="mt-3 max-w-2xl text-iron/80">
             A selection of homes we&apos;ve designed, built, and turned over
             across Bacolod, Negros Occidental, and Iloilo.
           </p>
@@ -22,17 +22,17 @@ export default function Gallery() {
           {galleryProjects.map((project) => (
             <Reveal key={project.name}>
               <div className="mb-5 flex flex-wrap items-baseline justify-between gap-2 border-b border-ember-dim/30 pb-3">
-                <h3 className="font-display text-xl font-bold text-capiz">
+                <h3 className="font-display text-xl font-bold text-iron">
                   {project.name}
                 </h3>
                 {project.location && (
-                  <span className="text-sm text-capiz-dim/70">
+                  <span className="text-sm text-iron/70">
                     {project.location}
                   </span>
                 )}
               </div>
               {project.description && (
-                <p className="mb-5 text-sm text-capiz-dim/80">
+                <p className="mb-5 text-sm text-iron/80">
                   {project.description}
                 </p>
               )}
