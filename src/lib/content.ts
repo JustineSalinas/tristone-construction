@@ -277,9 +277,11 @@ export const galleryProjects = [
   },
   {
     name: "Project Eli Caleb",
-    location: "",
-    description: "Two-Storey Five (5) Bedroom Residence",
+    location: "Palisades Subdivision",
+    description: "Two-Storey Five (5) Bedroom Residence: client meeting and site inspection.",
     images: [
+      "/images/projects/eli-caleb-inspection-a.jpg",
+      "/images/projects/eli-caleb-inspection-b.jpg",
       "/images/projects/684748924_122164696706708590_4493565176688997418_n.jpg",
       "/images/projects/667807746_122162726654708590_2043158458207591209_n.jpg",
       "/images/projects/669023102_122162726672708590_3407926157583519610_n.jpg",
