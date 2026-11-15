@@ -10,7 +10,6 @@ import {
   FacebookIcon,
   WhatsAppIcon,
   ViberIcon,
-  ChatIcon,
   CloseIcon,
   SendIcon,
 } from "./icons";
@@ -217,12 +216,13 @@ export default function FloatingContact() {
         </form>
       </div>
 
-      {/* Launcher: pill and close button crossfade in place */}
+      {/* Launcher: label pill + dark circle avatar, visible by default, crossfades to the close button when opened */}
       <div className="fixed bottom-5 right-4 z-50 sm:right-6">
         <div
+          className="flex items-center gap-3"
           style={{
             opacity: chatOpen ? 0 : 1,
-            transform: chatOpen ? "scale(0.85)" : "scale(1)",
+            transform: chatOpen ? "scale(0.9) translateX(10px)" : "scale(1) translateX(0)",
             pointerEvents: chatOpen ? "none" : "auto",
             transition: `opacity 200ms ${EASE}, transform 200ms ${EASE}`,
           }}
@@ -230,23 +230,32 @@ export default function FloatingContact() {
           <button
             type="button"
             onClick={() => setChatOpen(true)}
-            className="no-focus-ring flex h-14 cursor-pointer items-center gap-1 whitespace-nowrap rounded-full bg-capiz py-2 pl-5 pr-16 text-sm shadow-[0_10px_24px_-8px_rgba(0,0,0,0.25)] ring-1 ring-iron/10 transition-transform duration-200 hover:scale-[1.02]"
+            className="no-focus-ring flex h-14 cursor-pointer items-center gap-2.5 whitespace-nowrap rounded-full bg-gradient-to-br from-iron to-[#120d09] pl-5 pr-6 text-sm font-semibold text-capiz shadow-[0_10px_28px_-8px_rgba(0,0,0,0.45)] ring-1 ring-ember/25 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_14px_32px_-8px_rgba(0,0,0,0.5)] hover:ring-ember/50"
           >
-            <span className="font-display font-semibold text-ember">
-              Ask Us Anything
+            <span className="relative flex h-2 w-2 shrink-0">
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-ember opacity-75" />
+              <span className="relative inline-flex h-2 w-2 rounded-full bg-ember" />
             </span>
+            Ask Us Anything
           </button>
 
-          <span className="pointer-events-none absolute -right-1 top-1 flex h-12 w-12 items-center justify-center rounded-full bg-capiz shadow-[0_10px_24px_-8px_rgba(0,0,0,0.3)]">
-            <button
-              type="button"
-              onClick={() => setChatOpen(true)}
-              aria-label="Open chat"
-              className="no-focus-ring pointer-events-auto flex h-12 w-12 cursor-pointer items-center justify-center rounded-full bg-gradient-to-br from-ember-light to-ember text-white"
-            >
-              <ChatIcon className="h-5 w-5" />
-            </button>
-          </span>
+          <button
+            type="button"
+            onClick={() => setChatOpen(true)}
+            aria-label="Open chat"
+            className="no-focus-ring relative flex h-14 w-14 shrink-0 cursor-pointer items-center justify-center rounded-full bg-iron text-capiz shadow-[0_10px_24px_-8px_rgba(0,0,0,0.4)] ring-1 ring-ember-dim/30 transition-transform duration-200 hover:scale-[1.04]"
+          >
+            <Image
+              src="/brand/logo-mark.png"
+              alt=""
+              width={22}
+              height={22}
+              className="h-[1.35rem] w-[1.35rem] object-contain"
+            />
+            <span className="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-ember text-[10px] font-bold text-white ring-2 ring-capiz">
+              1
+            </span>
+          </button>
         </div>
 
         <button
@@ -259,7 +268,7 @@ export default function FloatingContact() {
             pointerEvents: chatOpen ? "auto" : "none",
             transition: `opacity 200ms ${EASE}, transform 200ms ${EASE}`,
           }}
-          className="no-focus-ring absolute right-0 top-0 flex h-12 w-12 items-center justify-center rounded-full bg-ember text-white shadow-[0_10px_24px_-8px_rgba(0,0,0,0.3)] hover:scale-105"
+          className="no-focus-ring absolute right-0 top-0 flex h-14 w-14 cursor-pointer items-center justify-center rounded-full bg-ember text-white shadow-[0_10px_24px_-8px_rgba(0,0,0,0.3)] hover:scale-105"
         >
           <CloseIcon className="h-5 w-5" />
         </button>

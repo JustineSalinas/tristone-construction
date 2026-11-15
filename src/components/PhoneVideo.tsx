@@ -2,9 +2,6 @@
 
 import { useEffect, useRef, useState } from "react";
 
-// Only one video plays at a time, site-wide, to keep playback smooth on low-power devices.
-let activeVideo: HTMLVideoElement | null = null;
-
 export default function PhoneVideo({
   src,
   caption,
@@ -34,24 +31,18 @@ export default function PhoneVideo({
     const playObserver = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
-          if (activeVideo && activeVideo !== video) {
-            activeVideo.pause();
-          }
-          activeVideo = video;
           video.play().catch(() => {});
         } else {
           video.pause();
-          if (activeVideo === video) activeVideo = null;
         }
       },
-      { threshold: 0.6 }
+      { threshold: 0.3 }
     );
     playObserver.observe(video);
 
     return () => {
       loadObserver.disconnect();
       playObserver.disconnect();
-      if (activeVideo === video) activeVideo = null;
     };
   }, []);
 

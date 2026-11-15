@@ -1,8 +1,32 @@
-import Image from "next/image";
 import { galleryProjects } from "@/lib/content";
 import { FretworkDivider } from "./Fretwork";
 import Reveal from "./Reveal";
-import StaggerReveal from "./StaggerReveal";
+import ProjectGrid from "./ProjectGrid";
+import type { ShowcaseProject } from "./project-types";
+
+function statusFor(description: string) {
+  const d = description.toLowerCase();
+  if (d.includes("turnover") || d.includes("finished") || d.includes("key")) return "Turnover";
+  if (d.includes("groundbreaking") || d.includes("soil")) return "Groundbreaking";
+  if (d.includes("rising") || d.includes("begin")) return "Ongoing";
+  if (d.includes("inspection") || d.includes("meeting")) return "Pre-Construction";
+  return "Build";
+}
+
+const projects: ShowcaseProject[] = galleryProjects.map((p, i) => {
+  const status = statusFor(p.description || "");
+  return {
+    slug: `gallery-${i}`,
+    name: p.name,
+    location: p.location || undefined,
+    cover: p.images[0],
+    images: p.images,
+    description: p.description || undefined,
+    status,
+    type: "Residential",
+    badge: status === "Turnover" ? "Completed" : status === "Ongoing" ? "Under Construction" : undefined,
+  };
+});
 
 export default function Gallery() {
   return (
@@ -14,47 +38,12 @@ export default function Gallery() {
           </h2>
           <p className="mt-3 max-w-2xl text-iron/80">
             A selection of homes we&apos;ve designed, built, and turned over
-            across Bacolod, Negros Occidental, and Iloilo.
+            across Bacolod, Negros Occidental, and Iloilo. Click a build for
+            the full photo set.
           </p>
         </Reveal>
 
-        <div className="mt-14 flex flex-col gap-16">
-          {galleryProjects.map((project) => (
-            <Reveal key={project.name}>
-              <div className="mb-5 flex flex-wrap items-baseline justify-between gap-2 border-b border-ember-dim/30 pb-3">
-                <h3 className="font-display text-xl font-bold text-iron">
-                  {project.name}
-                </h3>
-                {project.location && (
-                  <span className="text-sm text-iron/70">
-                    {project.location}
-                  </span>
-                )}
-              </div>
-              {project.description && (
-                <p className="mb-5 text-sm text-iron/80">
-                  {project.description}
-                </p>
-              )}
-              <StaggerReveal className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
-                {project.images.map((src) => (
-                  <div
-                    key={src}
-                    className="group relative aspect-[4/3] overflow-hidden bg-molave-raised"
-                  >
-                    <Image
-                      src={src}
-                      alt={project.name}
-                      fill
-                      sizes="(max-width: 768px) 100vw, 25vw"
-                      className="object-cover transition-transform duration-700 group-hover:scale-105"
-                    />
-                  </div>
-                ))}
-              </StaggerReveal>
-            </Reveal>
-          ))}
-        </div>
+        <ProjectGrid projects={projects} sectionLabel="OUR BUILDS" />
 
         <FretworkDivider className="mt-16 text-ember-dim" />
       </div>

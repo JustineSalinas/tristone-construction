@@ -12,12 +12,12 @@ const BURNT_LIGHT = "#F08A52";
 const DUR = 7000;
 
 const slides = [
-  { bg: "/images/herosection.jpg", cutout: "/images/hero-cutout.png", title: "Modern Residence" },
-  { bg: "/images/projects/2025-cleo-a.jpg", cutout: "/images/hero-cutout-cleo.png", title: "Project Cleo" },
-  { bg: "/images/projects/2025-raphael-a.jpg", cutout: "/images/hero-cutout-raphael.png", title: "Project Raphael" },
-  { bg: "/images/projects/2025-amarra-faith-a.jpg", cutout: "/images/hero-cutout-amarra.png", title: "Project Amarra Faith" },
-  { bg: "/images/projects/557485326_122145444122708590_8878783379772115357_n.jpg", cutout: "/images/hero-cutout-557.png", title: "Two-Storey Residence" },
-  { bg: "/images/projects/2025-preview-a.jpg", cutout: "/images/hero-cutout-pool.png", title: "Luxury Pool Villa" },
+  { bg: "/images/herosection.jpg", title: "Modern Residence" },
+  { bg: "/images/projects/2025-cleo-a.jpg", title: "Project Cleo" },
+  { bg: "/images/projects/2025-raphael-a.jpg", title: "Project Raphael" },
+  { bg: "/images/projects/2025-amarra-faith-a.jpg", title: "Project Amarra Faith" },
+  { bg: "/images/projects/557485326_122145444122708590_8878783379772115357_n.jpg", title: "Two-Storey Residence" },
+  { bg: "/images/projects/2025-preview-a.jpg", title: "Luxury Pool Villa" },
 ];
 
 export default function Hero() {
@@ -68,23 +68,10 @@ export default function Hero() {
     <section
       id="top"
       ref={sectionRef}
-      className="relative grid min-h-[100svh] w-full grid-rows-[auto_1fr_auto] overflow-hidden bg-capiz"
+      className="relative flex min-h-[100svh] w-full flex-col bg-capiz"
     >
-      {/* Top bar: eyebrow + motto on the light ivory ground, clear of the wordmark below it */}
-      <div
-        data-hero-reveal
-        className="relative z-[3] mx-auto flex w-full max-w-6xl flex-wrap items-baseline justify-between gap-2 px-5 pb-3 pt-6 sm:px-8"
-      >
-        <p className="text-xs font-semibold uppercase tracking-[0.18em] text-ember-dim">
-          Residential &amp; Commercial &middot; Since 2016
-        </p>
-        <p className="font-display text-sm italic text-iron/70 sm:text-base">
-          <em className="not-italic font-semibold">Built by Tristone.</em> Quality beyond promises.
-        </p>
-      </div>
-
-      {/* Photo stage: sits between the ivory bar above and the foot below */}
-      <div className="relative z-0 w-full overflow-hidden">
+      {/* Photo stage: fills the rest of the section so the dark gradient reaches all the way to the foot copy */}
+      <div className="relative z-0 w-full min-h-[560px] flex-1">
         {slides.map((slide, i) => (
           <div
             key={slide.bg}
@@ -93,38 +80,46 @@ export default function Hero() {
           >
             {/* Background photo, faded to transparent at its own top edge */}
             <div
-              className="absolute inset-0"
+              className="absolute inset-0 overflow-hidden"
               style={{
                 maskImage:
-                  "linear-gradient(180deg, transparent 0%, rgba(0,0,0,0.1) 16%, rgba(0,0,0,0.65) 38%, #000 58%)",
+                  "linear-gradient(180deg, transparent 0%, rgba(0,0,0,0.1) 26%, rgba(0,0,0,0.65) 46%, #000 64%)",
                 WebkitMaskImage:
-                  "linear-gradient(180deg, transparent 0%, rgba(0,0,0,0.1) 16%, rgba(0,0,0,0.65) 38%, #000 58%)",
+                  "linear-gradient(180deg, transparent 0%, rgba(0,0,0,0.1) 26%, rgba(0,0,0,0.65) 46%, #000 64%)",
               }}
             >
-              <Image src={slide.bg} alt="" fill priority={i === 0} className="object-cover" />
+              <div
+                key={`${slide.bg}-${i === active}`}
+                className={`absolute inset-0 ${i === active ? "animate-kenburns" : ""}`}
+              >
+                <Image
+                  src={slide.bg}
+                  alt=""
+                  fill
+                  priority={i === 0}
+                  className="object-cover object-[50%_28%]"
+                />
+              </div>
             </div>
           </div>
         ))}
 
-        {/* Giant wordmark, sandwiched under the foreground cutouts */}
-        <p
+        {/* Giant wordmark, faded by the same mask as the photo above it */}
+        <div
           ref={wordmarkRef}
           aria-hidden="true"
-          className="pointer-events-none absolute left-0 right-0 top-[1rem] select-none text-center font-display font-medium uppercase leading-[0.8] tracking-[-0.03em] text-iron sm:top-[0.5rem]"
-          style={{ fontSize: "clamp(3rem, 13vw, 9rem)" }}
+          className="pointer-events-none absolute left-0 right-0 top-[3.5rem] select-none text-center sm:top-[4.5rem]"
         >
-          Tristone
-        </p>
-
-        {slides.map((slide, i) => (
-          <div
-            key={slide.cutout}
-            className="pointer-events-none absolute inset-0 overflow-visible transition-opacity duration-[1400ms] ease-in-out"
-            style={{ opacity: i === active ? 1 : 0 }}
+          <p
+            className="font-display font-medium uppercase leading-[0.8] tracking-[-0.03em] text-iron"
+            style={{ fontSize: "clamp(3rem, 13vw, 9rem)" }}
           >
-            <Image src={slide.cutout} alt="" fill className="object-contain object-bottom" />
-          </div>
-        ))}
+            Tristone
+          </p>
+          <p className="mt-3 font-display text-sm italic text-iron/70 sm:mt-4 sm:text-base">
+            Quality beyond promises.
+          </p>
+        </div>
 
         {/* Dark shade for legibility of the bottom copy */}
         <div
@@ -134,10 +129,9 @@ export default function Hero() {
               "radial-gradient(ellipse 64% 62% at 0% 100%, rgba(20,15,10,0.72), rgba(20,15,10,0) 74%), linear-gradient(0deg, rgba(20,15,10,0.82) 0%, rgba(20,15,10,0.5) 22%, rgba(20,15,10,0) 46%)",
           }}
         />
-      </div>
 
-      {/* Foot: copy left, slide controls right */}
-      <div className="relative z-[3] mx-auto flex w-full max-w-6xl flex-col items-start justify-end gap-8 px-5 pb-8 sm:px-8 sm:pb-10 lg:flex-row lg:items-end lg:justify-between">
+      {/* Foot: copy left, slide controls right — pinned to the photo stage's own bottom so it always sits on the dark gradient */}
+      <div className="absolute inset-x-0 bottom-0 z-[3] mx-auto flex w-full max-w-6xl flex-col items-start justify-end gap-8 px-5 pb-8 sm:px-8 sm:pb-10 lg:flex-row lg:items-end lg:justify-between">
         <div data-hero-reveal className="max-w-xl">
           <h1 className="font-display text-4xl leading-[1.05] text-white sm:text-5xl">
             Your <em className="italic" style={{ color: BURNT }}>dream home</em> starts here.
@@ -195,18 +189,20 @@ export default function Hero() {
                   type="button"
                   aria-label={`Show ${slide.title}`}
                   onClick={() => setActive(i)}
-                  className="h-0.5 w-10 overflow-hidden bg-white/25"
+                  className="group/bar flex h-4 w-10 cursor-pointer items-center"
                 >
-                  <span
-                    className="block h-full origin-left bg-white"
-                    style={
-                      i === active
-                        ? {
-                            animation: `hero-bar-fill ${DUR}ms linear forwards ${paused ? "paused" : "running"}`,
-                          }
-                        : { transform: `scaleX(${i < active ? 1 : 0})` }
-                    }
-                  />
+                  <span className="block h-0.5 w-full overflow-hidden bg-white/25 transition-[height] group-hover/bar:h-1">
+                    <span
+                      className="block h-full origin-left bg-white"
+                      style={
+                        i === active
+                          ? {
+                              animation: `hero-bar-fill ${DUR}ms linear forwards ${paused ? "paused" : "running"}`,
+                            }
+                          : { transform: `scaleX(${i < active ? 1 : 0})` }
+                      }
+                    />
+                  </span>
                 </button>
               ))}
             </div>
@@ -229,11 +225,19 @@ export default function Hero() {
           </div>
         </div>
       </div>
+      </div>
 
       <style>{`
         @keyframes hero-bar-fill {
           from { transform: scaleX(0); }
           to { transform: scaleX(1); }
+        }
+        @keyframes kenburns {
+          from { transform: scale(1.12); }
+          to { transform: scale(1); }
+        }
+        .animate-kenburns {
+          animation: kenburns ${DUR + 1400}ms ease-out forwards;
         }
       `}</style>
     </section>

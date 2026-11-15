@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { siteInfo } from "@/lib/content";
 
@@ -13,8 +13,51 @@ const links = [
   { href: "#contact", label: "Contact" },
 ];
 
+const allLinks = [primaryLink, ...links];
+
 export default function Navbar() {
   const [open, setOpen] = useState(false);
+  const [activeHref, setActiveHref] = useState(primaryLink.href);
+  const navRef = useRef<HTMLElement>(null);
+  const linkRefs = useRef<Record<string, HTMLAnchorElement | null>>({});
+  const [pillStyle, setPillStyle] = useState({ left: 0, width: 0 });
+
+  useEffect(() => {
+    const sectionIds = allLinks.map((l) => l.href.slice(1));
+    const sections = sectionIds
+      .map((id) => document.getElementById(id))
+      .filter((el): el is HTMLElement => !!el);
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const visible = entries
+          .filter((e) => e.isIntersecting)
+          .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+        if (visible) setActiveHref(`#${visible.target.id}`);
+      },
+      { rootMargin: "-40% 0px -50% 0px", threshold: [0, 0.25, 0.5, 0.75, 1] }
+    );
+
+    sections.forEach((el) => observer.observe(el));
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    const update = () => {
+      const nav = navRef.current;
+      const active = linkRefs.current[activeHref];
+      if (!nav || !active) return;
+      const navRect = nav.getBoundingClientRect();
+      const activeRect = active.getBoundingClientRect();
+      setPillStyle({
+        left: activeRect.left - navRect.left,
+        width: activeRect.width,
+      });
+    };
+    update();
+    window.addEventListener("resize", update);
+    return () => window.removeEventListener("resize", update);
+  }, [activeHref]);
 
   return (
     <header className="sticky top-0 z-50 border-b border-iron/10 bg-capiz/95 backdrop-blur-md">
@@ -38,18 +81,22 @@ export default function Navbar() {
           </span>
         </a>
 
-        <nav className="hidden items-center gap-1 rounded-full bg-iron/5 p-1 md:flex">
-          <a
-            href={primaryLink.href}
-            className="rounded-full bg-iron px-4 py-2 text-sm font-medium text-capiz"
-          >
-            {primaryLink.label}
-          </a>
-          {links.map((link) => (
+        <nav ref={navRef} className="relative hidden items-center gap-1 rounded-full bg-iron/5 p-1 md:flex">
+          <span
+            aria-hidden="true"
+            className="absolute top-1 bottom-1 rounded-full bg-iron transition-[left,width] duration-300 ease-out"
+            style={{ left: pillStyle.left, width: pillStyle.width }}
+          />
+          {allLinks.map((link) => (
             <a
               key={link.href}
+              ref={(el) => {
+                linkRefs.current[link.href] = el;
+              }}
               href={link.href}
-              className="rounded-full px-4 py-2 text-sm font-medium text-iron/60 transition-colors hover:text-iron"
+              className={`relative z-[1] rounded-full px-4 py-2 text-sm font-medium transition-colors duration-300 ${
+                activeHref === link.href ? "text-capiz" : "text-iron/60 hover:text-iron"
+              }`}
             >
               {link.label}
             </a>
