@@ -33,7 +33,8 @@ export default function DragMarquee({
 
   useEffect(() => {
     const track = trackRef.current;
-    if (!track) return;
+    const viewport = viewportRef.current;
+    if (!track || !viewport) return;
     const state = stateRef.current;
 
     const measure = () => {
@@ -48,6 +49,8 @@ export default function DragMarquee({
     ro.observe(track);
 
     let raf = 0;
+    let onScreen = false;
+
     const step = (t: number) => {
       if (!state.lastT) state.lastT = t;
       const dt = t - state.lastT;
@@ -61,11 +64,26 @@ export default function DragMarquee({
       }
       raf = requestAnimationFrame(step);
     };
-    raf = requestAnimationFrame(step);
+
+    const visibility = new IntersectionObserver(
+      ([entry]) => {
+        onScreen = entry.isIntersecting;
+        if (onScreen && !raf) {
+          state.lastT = 0;
+          raf = requestAnimationFrame(step);
+        } else if (!onScreen && raf) {
+          cancelAnimationFrame(raf);
+          raf = 0;
+        }
+      },
+      { threshold: 0 }
+    );
+    visibility.observe(viewport);
 
     return () => {
-      cancelAnimationFrame(raf);
+      if (raf) cancelAnimationFrame(raf);
       ro.disconnect();
+      visibility.disconnect();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [direction, speed]);
