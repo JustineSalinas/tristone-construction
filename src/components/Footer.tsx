@@ -56,6 +56,7 @@ const columns = [
         <a href="#projects" className="hover:text-ember-light">Our Builds</a>
         <a href="#financing" className="hover:text-ember-light">Financing</a>
         <a href="#testimonials" className="hover:text-ember-light">Reviews</a>
+        <a href="#careers" className="hover:text-ember-light">We&apos;re Hiring</a>
         <a href="#contact" className="hover:text-ember-light">Contact</a>
       </div>
     ),
