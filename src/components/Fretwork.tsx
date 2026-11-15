@@ -1,21 +1,13 @@
 export function FretworkDivider({ className = "" }: { className?: string }) {
   return (
-    <svg
-      viewBox="0 0 240 28"
-      preserveAspectRatio="none"
-      className={`fretwork-divider ${className}`}
+    <div
+      className={`fretwork-divider flex items-center gap-3 ${className}`}
       aria-hidden="true"
     >
-      <path
-        d="M0 14 Q10 2 20 14 T40 14 T60 14 T80 14 T100 14 T120 14 T140 14 T160 14 T180 14 T200 14 T220 14 T240 14"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.5"
-      />
-      {Array.from({ length: 13 }).map((_, i) => (
-        <circle key={i} cx={i * 20} cy={14} r={2.5} fill="currentColor" />
-      ))}
-    </svg>
+      <span className="h-px flex-1 bg-current opacity-30" />
+      <DiamondBullet className="shrink-0" />
+      <span className="h-px flex-1 bg-current opacity-30" />
+    </div>
   );
 }
 

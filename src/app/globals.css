@@ -99,9 +99,7 @@ button {
 }
 
 .fretwork-divider {
-  display: block;
   width: 100%;
-  height: 28px;
   color: var(--ember-dim);
 }
 
