@@ -66,7 +66,7 @@ export default function PhoneVideo({
             muted={muted}
             loop
             playsInline
-            preload="none"
+            preload="metadata"
             className="h-full w-full object-cover"
           />
           {/* Dynamic island */}
