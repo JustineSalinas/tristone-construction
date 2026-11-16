@@ -274,11 +274,11 @@ export default function FloatingContact() {
         </form>
       </div>
 
-      {/* Launcher: label pill + dark circle avatar, visible by default, crossfades to the close button when opened */}
+      {/* Launcher: tour button + label pill + dark circle avatar, visible by default, crossfades to the close button when opened */}
       <div className="fixed bottom-5 right-4 z-50 sm:right-6">
         <div
           id="concierge-fab"
-          className="flex items-center gap-3"
+          className="flex items-center gap-2 sm:gap-3"
           style={{
             opacity: chatOpen ? 0 : 1,
             transform: chatOpen ? "scale(0.9) translateX(10px)" : "scale(1) translateX(0)",
@@ -286,6 +286,27 @@ export default function FloatingContact() {
             transition: `opacity 200ms ${EASE}, transform 200ms ${EASE}`,
           }}
         >
+          {/* Quick Site Tour Button */}
+          <button
+            type="button"
+            id="tour-button"
+            onClick={() => window.dispatchEvent(new CustomEvent("start-tristone-tour"))}
+            aria-label="Start interactive site tour"
+            className="no-focus-ring flex h-12 sm:h-14 cursor-pointer items-center gap-1.5 sm:gap-2 rounded-full border border-iron/15 bg-capiz/95 px-3 sm:px-4 text-[11px] sm:text-xs font-bold uppercase tracking-wider text-iron shadow-[0_8px_20px_-6px_rgba(0,0,0,0.18)] ring-1 ring-ember/25 backdrop-blur-md transition-all duration-200 hover:-translate-y-0.5 hover:border-ember hover:text-ember hover:shadow-[0_12px_24px_-6px_rgba(217,83,31,0.25)]"
+          >
+            <svg
+              viewBox="0 0 24 24"
+              className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-ember shrink-0"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+            >
+              <circle cx="12" cy="12" r="10" />
+              <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76" fill="currentColor" />
+            </svg>
+            <span className="font-display tracking-[0.15em]">Tour</span>
+          </button>
+
           <button
             type="button"
             onClick={() => setChatOpen(true)}
@@ -302,16 +323,16 @@ export default function FloatingContact() {
             type="button"
             onClick={() => setChatOpen(true)}
             aria-label="Open chat"
-            className="no-focus-ring relative flex h-14 w-14 shrink-0 cursor-pointer items-center justify-center rounded-full bg-iron text-capiz shadow-[0_10px_24px_-8px_rgba(0,0,0,0.4)] ring-1 ring-ember-dim/30 transition-transform duration-200 hover:scale-[1.04]"
+            className="no-focus-ring relative flex h-12 w-12 sm:h-14 sm:w-14 shrink-0 cursor-pointer items-center justify-center rounded-full bg-iron text-capiz shadow-[0_10px_24px_-8px_rgba(0,0,0,0.4)] ring-1 ring-ember-dim/30 transition-transform duration-200 hover:scale-[1.04]"
           >
             <Image
               src={logoMarkOnDark}
               alt=""
               width={22}
               height={22}
-              className="h-[1.35rem] w-[1.35rem] object-contain"
+              className="h-[1.2rem] w-[1.2rem] sm:h-[1.35rem] sm:w-[1.35rem] object-contain"
             />
-            <span className="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-ember text-[10px] font-bold text-white ring-2 ring-capiz">
+            <span className="absolute -right-0.5 -top-0.5 sm:-right-1 sm:-top-1 flex h-4 w-4 sm:h-5 sm:w-5 items-center justify-center rounded-full bg-ember text-[9px] sm:text-[10px] font-bold text-white ring-2 ring-capiz">
               1
             </span>
           </button>
@@ -327,7 +348,7 @@ export default function FloatingContact() {
             pointerEvents: chatOpen ? "auto" : "none",
             transition: `opacity 200ms ${EASE}, transform 200ms ${EASE}`,
           }}
-          className="no-focus-ring absolute right-0 top-0 flex h-14 w-14 cursor-pointer items-center justify-center rounded-full bg-ember text-white shadow-[0_10px_24px_-8px_rgba(0,0,0,0.3)] hover:scale-105"
+          className="no-focus-ring absolute right-0 top-0 flex h-12 w-12 sm:h-14 sm:w-14 cursor-pointer items-center justify-center rounded-full bg-ember text-white shadow-[0_10px_24px_-8px_rgba(0,0,0,0.3)] hover:scale-105"
         >
           <CloseIcon className="h-5 w-5" />
         </button>

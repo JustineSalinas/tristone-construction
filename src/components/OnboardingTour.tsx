@@ -2,57 +2,57 @@
 
 import { useEffect, useRef, useState } from "react";
 
-const STORAGE_KEY = "tristone-tour-done";
-const AUTO_ADVANCE_MS = 6000;
+const USER_NAME_KEY = "tristone-user-name";
+const AUTO_ADVANCE_MS = 6500;
 
 const steps = [
   {
     id: "top",
-    tag: "Hero & Flagship Builds",
-    title: "Project Slide Showcase",
-    text: "Swipe between featured homes or tap to call our engineering team directly.",
+    tag: "Hero Showcase",
+    title: "Flagship Residential Builds",
+    text: "Swipe through our signature projects, view locations, or call our engineering team directly.",
   },
   {
     id: "about",
     tag: "The Firm & Process",
-    title: "About Tristone & How We Build",
-    text: "Meet our licensed civil engineers and review our 5-step build process from soil to keys.",
+    title: "About Tristone & 5-Step Build",
+    text: "Meet our licensed civil engineers and review our 5-step build process from blueprints to turnover.",
   },
   {
     id: "clients",
     tag: "Diaspora Living",
-    title: "Overseas Family Builds",
-    text: "Explore real lot and floor area specifications built for families living abroad.",
+    title: "Homes for Filipinos Overseas",
+    text: "Custom floorplans designed for families abroad with real-time remote construction updates.",
   },
   {
     id: "rising",
     tag: "Active Commission",
     title: "Interactive Project Showcase",
-    text: "Tap any project card to inspect 3D walkarounds, room dimensions, and upgrades.",
+    text: "Inspect room dimensions, exterior architecture, modular cabinets, and premium finishes.",
   },
   {
     id: "projects",
     tag: "Works Portfolio",
-    title: "Filterable Build Gallery",
-    text: "Filter between completed turnovers, ongoing construction, and groundbreakings.",
+    title: "Filterable Project Gallery",
+    text: "Filter between Ongoing builds, Completed turnovers, and groundbreakings across Negros and Iloilo.",
   },
   {
     id: "y2025",
     tag: "Pipeline",
     title: "2025 Lineup",
-    text: "Preview newly scheduled residential builds breaking ground this year across Western Visayas.",
+    text: "Preview upcoming residential builds breaking ground this year across Western Visayas.",
   },
   {
     id: "videos",
     tag: "On-Site Motion",
     title: "Site Walkthrough Videos",
-    text: "Watch vertical on-site progress clips, structural concrete pours, and ribbon ceremonies.",
+    text: "Watch on-site progress clips, structural concrete pours, and ceremonial key turnovers.",
   },
   {
     id: "financing",
     tag: "Budget & Loans",
-    title: "Build Now, Pay Later",
-    text: "Check PAG-IBIG Fund assistance, commercial bank loan support, and included freebies.",
+    title: "Financing & Freebies",
+    text: "PAG-IBIG and commercial bank loan processing with complimentary permits and pest control.",
   },
   {
     id: "testimonials",
@@ -64,7 +64,7 @@ const steps = [
     id: "careers",
     tag: "Join Our Team",
     title: "Careers at Tristone",
-    text: "Explore openings for draftsmen, site engineers, and architectural staff.",
+    text: "Explore openings for licensed civil engineers, project architects, and site supervisors.",
   },
   {
     id: "contact",
@@ -74,9 +74,9 @@ const steps = [
   },
   {
     id: "concierge-fab",
-    tag: "24/7 Support",
-    title: "Tristone Concierge",
-    text: "Tap this button anytime to ask questions about financing, permits, or our building process.",
+    tag: "24/7 Concierge",
+    title: "Instant AI Assistant & Tour",
+    text: "Tap here anytime to ask about pricing, permits, or restart this interactive tour.",
   },
 ];
 
@@ -89,20 +89,38 @@ export default function OnboardingTour() {
   const highlightedRef = useRef<HTMLElement | null>(null);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
+  // Trigger prompt by default on every page load or refresh
   useEffect(() => {
     try {
-      if (!localStorage.getItem(STORAGE_KEY)) {
-        const id = setTimeout(() => setStage("ask"), 1400);
-        return () => clearTimeout(id);
-      }
+      const savedName = localStorage.getItem(USER_NAME_KEY);
+      if (savedName) setName(savedName);
     } catch {
-      // localStorage unavailable; skip tour
+      // ignore
     }
+
+    // Short delay so layout and hero settle before presenting prompt
+    const id = setTimeout(() => {
+      setStage("ask");
+    }, 1100);
+
+    return () => clearTimeout(id);
+  }, []);
+
+  // Listen for manual trigger from Tour button beside chatbot
+  useEffect(() => {
+    const handleStartEvent = () => {
+      clearHighlight();
+      setStage("ask");
+    };
+    window.addEventListener("start-tristone-tour", handleStartEvent);
+    return () => window.removeEventListener("start-tristone-tour", handleStartEvent);
   }, []);
 
   const clearHighlight = () => {
-    highlightedRef.current?.classList.remove("tour-highlight");
-    highlightedRef.current = null;
+    if (highlightedRef.current) {
+      highlightedRef.current.classList.remove("tour-highlight");
+      highlightedRef.current = null;
+    }
   };
 
   const goToStep = (idx: number) => {
@@ -112,7 +130,9 @@ export default function OnboardingTour() {
     if (el) {
       el.classList.add("tour-highlight");
       highlightedRef.current = el;
-      el.scrollIntoView({ behavior: "smooth", block: "center" });
+      if (step.id !== "concierge-fab") {
+        el.scrollIntoView({ behavior: "smooth", block: "center" });
+      }
     }
     setStepIndex(idx);
     setProgress(0);
@@ -121,14 +141,16 @@ export default function OnboardingTour() {
   const endTour = () => {
     clearHighlight();
     setStage("hidden");
-    try {
-      localStorage.setItem(STORAGE_KEY, "1");
-    } catch {
-      // ignore
-    }
   };
 
   const startTour = () => {
+    if (name.trim()) {
+      try {
+        localStorage.setItem(USER_NAME_KEY, name.trim());
+      } catch {
+        // ignore
+      }
+    }
     setStage("touring");
     goToStep(0);
   };
@@ -150,7 +172,7 @@ export default function OnboardingTour() {
     return () => window.removeEventListener("keydown", handleKey);
   }, [stage, stepIndex]);
 
-  // Auto-advance with progress bar (pauses on hover/touch)
+  // Auto-advance with progress bar (pauses on hover or touch)
   useEffect(() => {
     if (stage !== "touring" || isPaused) return;
     setProgress(0);
@@ -180,28 +202,34 @@ export default function OnboardingTour() {
 
   if (stage === "hidden") return null;
 
-  // Lightweight initial prompt: compact, non-intrusive on mobile
+  // Initial prompt modal asking name + clear skip button
   if (stage === "ask") {
     return (
-      <div className="fixed inset-x-4 bottom-4 z-[200] sm:bottom-6 sm:right-6 sm:left-auto sm:max-w-sm">
-        <div className="rounded-2xl border border-ember-dim/30 bg-iron p-5 text-capiz shadow-[0_20px_40px_-15px_rgba(0,0,0,0.6)] backdrop-blur-md">
-          <div className="flex items-center justify-between text-[10px] font-bold uppercase tracking-[0.2em] text-ember-light">
-            <span>Quick Walkthrough</span>
+      <div className="fixed inset-x-4 bottom-5 z-[200] sm:bottom-6 sm:right-6 sm:left-auto sm:w-full sm:max-w-sm">
+        <div className="rounded-2xl border border-iron/15 bg-white/95 p-5 text-iron shadow-[0_20px_45px_-12px_rgba(26,20,16,0.22),0_4px_12px_rgba(0,0,0,0.06)] backdrop-blur-md">
+          <div className="flex items-center justify-between text-[10px] font-bold uppercase tracking-[0.2em] text-ember">
+            <span className="flex items-center gap-1.5">
+              <svg viewBox="0 0 24 24" className="h-3 w-3" fill="none" stroke="currentColor" strokeWidth="2.5">
+                <circle cx="12" cy="12" r="10" />
+                <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76" fill="currentColor" />
+              </svg>
+              Interactive Site Tour
+            </span>
             <button
               type="button"
               onClick={endTour}
-              className="text-capiz-dim/40 hover:text-capiz"
-              aria-label="Dismiss tour"
+              className="text-iron/40 hover:text-iron text-lg leading-none p-1 -mr-1"
+              aria-label="Skip and close tour"
             >
               &times;
             </button>
           </div>
 
-          <h3 className="mt-2 font-display text-base font-bold text-capiz">
+          <h3 className="mt-2.5 font-display text-base font-bold text-iron">
             Take a 1-minute site tour?
           </h3>
-          <p className="mt-1 text-xs text-capiz-dim/75 leading-relaxed">
-            We&apos;ll walk you through our tools, active builds, 3D plans, and financing.
+          <p className="mt-1 text-xs text-iron/70 leading-relaxed">
+            Walk through our active builds, 3D floor plans, financing options, and on-site videos.
           </p>
 
           <form
@@ -209,27 +237,34 @@ export default function OnboardingTour() {
               e.preventDefault();
               startTour();
             }}
-            className="mt-3.5 flex flex-col gap-2"
+            className="mt-3.5 flex flex-col gap-2.5"
           >
-            <input
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              placeholder="First name (optional)"
-              className="w-full rounded-lg border border-capiz/15 bg-capiz/5 px-3 py-1.5 text-xs text-capiz placeholder-capiz-dim/40 outline-none focus:border-ember"
-            />
-            <div className="flex items-center gap-2 pt-1">
+            <div>
+              <label htmlFor="tour-user-name" className="sr-only">
+                What is your name?
+              </label>
+              <input
+                id="tour-user-name"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                placeholder="What is your name? (optional)"
+                autoFocus
+                className="w-full rounded-xl border border-iron/20 bg-capiz/60 px-3.5 py-2 text-xs text-iron placeholder-iron/45 outline-none transition focus:border-ember focus:bg-white focus:ring-2 focus:ring-ember/20"
+              />
+            </div>
+            <div className="flex items-center gap-2 pt-0.5">
               <button
                 type="submit"
-                className="flex-1 rounded-lg bg-ember py-2 text-center font-display text-xs font-bold text-white transition-colors hover:bg-ember-light"
+                className="flex-1 rounded-xl bg-ember py-2.5 text-center font-display text-xs font-bold text-white shadow-sm transition hover:bg-ember-light active:scale-[0.98]"
               >
-                Start Tour
+                Take the Tour &rarr;
               </button>
               <button
                 type="button"
                 onClick={endTour}
-                className="rounded-lg border border-capiz/15 px-3 py-2 text-xs font-medium text-capiz-dim/70 hover:text-capiz"
+                className="rounded-xl border border-iron/20 bg-white px-3.5 py-2.5 text-xs font-semibold text-iron/70 transition hover:bg-iron/5 hover:text-iron active:scale-[0.98]"
               >
-                Skip
+                Skip Tour
               </button>
             </div>
           </form>
@@ -244,15 +279,15 @@ export default function OnboardingTour() {
 
   return (
     <div
-      className="pointer-events-none fixed inset-x-4 bottom-4 z-[200] flex justify-center sm:bottom-6 sm:inset-x-auto sm:right-6 sm:w-full sm:max-w-md"
+      className="pointer-events-none fixed inset-x-4 bottom-5 z-[200] flex justify-center sm:bottom-6 sm:inset-x-auto sm:right-6 sm:w-full sm:max-w-md"
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
       onTouchStart={() => setIsPaused(true)}
       onTouchEnd={() => setIsPaused(false)}
     >
-      <div className="pointer-events-auto w-full rounded-2xl border border-ember-dim/30 bg-iron text-capiz shadow-[0_25px_50px_-15px_rgba(0,0,0,0.7)] overflow-hidden">
+      <div className="pointer-events-auto w-full rounded-2xl border border-iron/15 bg-white/98 text-iron shadow-[0_24px_50px_-12px_rgba(26,20,16,0.25),0_4px_12px_rgba(0,0,0,0.06)] backdrop-blur-md overflow-hidden">
         {/* Progress bar */}
-        <div className="h-[2px] w-full bg-capiz/10">
+        <div className="h-[3px] w-full bg-iron/10">
           <div
             className="h-full bg-ember transition-[width] duration-100 ease-linear"
             style={{ width: `${progress}%` }}
@@ -261,16 +296,16 @@ export default function OnboardingTour() {
 
         <div className="p-4 sm:p-5">
           {/* Header row: feature tag + step count + close */}
-          <div className="flex items-center justify-between text-[10px] font-semibold uppercase tracking-[0.2em] text-ember-light">
+          <div className="flex items-center justify-between text-[10px] font-bold uppercase tracking-[0.2em] text-ember">
             <span className="truncate max-w-[200px]">{step.tag}</span>
             <div className="flex items-center gap-2.5 shrink-0">
-              <span className="font-mono text-capiz-dim/60">
+              <span className="font-mono text-iron/60">
                 {stepIndex + 1} / {steps.length}
               </span>
               <button
                 type="button"
                 onClick={endTour}
-                className="text-capiz-dim/40 hover:text-capiz text-sm leading-none"
+                className="text-iron/40 hover:text-iron text-base leading-none p-0.5"
                 aria-label="Exit tour"
               >
                 &times;
@@ -279,21 +314,21 @@ export default function OnboardingTour() {
           </div>
 
           {/* Title & Concise text */}
-          <h4 className="mt-1.5 font-display text-sm sm:text-base font-bold text-capiz">
+          <h4 className="mt-1.5 font-display text-sm sm:text-base font-bold text-iron">
             {step.title}
           </h4>
-          <p className="mt-1 text-xs leading-relaxed text-capiz-dim/80">
+          <p className="mt-1 text-xs leading-relaxed text-iron/75">
             {greeting}
             {step.text}
           </p>
 
           {/* Controls */}
-          <div className="mt-3.5 flex items-center justify-between pt-2.5 border-t border-capiz/10">
+          <div className="mt-3.5 flex items-center justify-between pt-2.5 border-t border-iron/10">
             <button
               type="button"
               onClick={() => goToStep(Math.max(0, stepIndex - 1))}
               disabled={stepIndex === 0}
-              className="text-xs font-medium text-capiz-dim/60 hover:text-capiz disabled:opacity-25 disabled:cursor-not-allowed"
+              className="text-xs font-semibold text-iron/60 hover:text-iron disabled:opacity-25 disabled:cursor-not-allowed transition-colors"
             >
               &larr; Back
             </button>
@@ -303,9 +338,9 @@ export default function OnboardingTour() {
               onClick={() =>
                 stepIndex < steps.length - 1 ? goToStep(stepIndex + 1) : endTour()
               }
-              className="rounded-lg bg-ember px-4 py-1.5 font-display text-xs font-bold text-white transition-colors hover:bg-ember-light"
+              className="rounded-lg bg-ember px-4 py-1.5 font-display text-xs font-bold text-white transition-colors hover:bg-ember-light active:scale-[0.98]"
             >
-              {stepIndex < steps.length - 1 ? "Next \u2192" : "Finish"}
+              {stepIndex < steps.length - 1 ? "Next \u2192" : "Finish \u2713"}
             </button>
           </div>
         </div>
@@ -313,16 +348,10 @@ export default function OnboardingTour() {
 
       <style>{`
         .tour-highlight {
-          position: relative;
-          z-index: 150;
-          outline: 2px solid var(--ember);
-          outline-offset: 4px;
-          border-radius: 8px;
-          animation: tour-pulse 1.6s ease-in-out infinite;
-        }
-        @keyframes tour-pulse {
-          0%, 100% { box-shadow: 0 0 0 0 rgba(217, 83, 31, 0.45); }
-          50% { box-shadow: 0 0 0 10px rgba(217, 83, 31, 0); }
+          outline: 2px solid #d9531f !important;
+          outline-offset: -2px !important;
+          box-shadow: 0 0 0 4px rgba(217, 83, 31, 0.22) !important;
+          transition: outline 0.25s ease, box-shadow 0.25s ease !important;
         }
       `}</style>
     </div>
