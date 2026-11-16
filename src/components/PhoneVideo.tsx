@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { CloseIcon } from "./icons";
 
 export default function PhoneVideo({
@@ -14,6 +15,11 @@ export default function PhoneVideo({
   const [muted, setMuted] = useState(true);
   const [shouldLoad, setShouldLoad] = useState(false);
   const [expanded, setExpanded] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     const video = videoRef.current;
@@ -110,29 +116,39 @@ export default function PhoneVideo({
         {caption}
       </p>
 
-      {expanded && (
+      {expanded && mounted && typeof document !== "undefined" && createPortal(
         <div
-          className="fixed inset-0 z-[100] flex items-center justify-center bg-iron/90 p-4 backdrop-blur-sm sm:p-8"
+          className="fixed inset-0 z-[250] flex items-center justify-center bg-iron/90 p-4 backdrop-blur-md sm:p-8"
           onClick={() => setExpanded(false)}
         >
           <button
             type="button"
             onClick={() => setExpanded(false)}
-            aria-label="Close"
-            className="no-focus-ring absolute right-4 top-4 flex h-10 w-10 cursor-pointer items-center justify-center rounded-full bg-capiz text-iron transition-transform hover:scale-105 sm:right-8 sm:top-8"
+            aria-label="Close video"
+            className="no-focus-ring absolute right-4 top-4 z-10 flex h-11 w-11 cursor-pointer items-center justify-center rounded-full bg-capiz text-iron shadow-lg transition-transform hover:scale-105 sm:right-8 sm:top-8"
           >
             <CloseIcon className="h-4 w-4" />
           </button>
-          <video
-            src={src}
-            controls
-            autoPlay
-            playsInline
-            loop
-            className="aspect-[9/16] h-[85vh] max-h-[85vh] w-auto max-w-full rounded-xl bg-iron shadow-[0_40px_80px_-20px_rgba(0,0,0,0.6)]"
+          <div
+            className="relative flex max-h-[92vh] max-w-[92vw] flex-col items-center justify-center"
             onClick={(e) => e.stopPropagation()}
-          />
-        </div>
+          >
+            <video
+              src={src}
+              controls
+              autoPlay
+              playsInline
+              loop
+              className="aspect-[9/16] max-h-[82vh] w-auto max-w-full rounded-xl bg-black shadow-[0_30px_90px_-20px_rgba(0,0,0,0.8)]"
+            />
+            {caption && (
+              <p className="mt-3 max-w-sm text-center text-xs font-medium text-capiz/85 sm:text-sm">
+                {caption}
+              </p>
+            )}
+          </div>
+        </div>,
+        document.body
       )}
     </div>
   );

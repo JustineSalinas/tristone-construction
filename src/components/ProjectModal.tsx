@@ -116,8 +116,8 @@ export default function ProjectModal({
         className="relative max-h-[92vh] w-full max-w-4xl overflow-y-auto rounded-sm bg-capiz shadow-[0_40px_80px_-20px_rgba(0,0,0,0.5)]"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="sticky top-0 z-20 bg-capiz">
-        <div className="flex items-start justify-between gap-4 px-6 pt-6 sm:px-8 sm:pt-8">
+        {/* Sticky Header Bar: stays at top with Close button, but photo & specs scroll naturally */}
+        <div className="sticky top-0 z-20 flex items-start justify-between gap-4 border-b border-iron/10 bg-capiz/95 px-6 py-4 backdrop-blur-sm sm:px-8 sm:py-5">
           <div>
             <p className="text-xs font-semibold uppercase tracking-[0.2em] text-ember-dim">
               {sectionLabel}
@@ -141,7 +141,8 @@ export default function ProjectModal({
           </button>
         </div>
 
-        <div className="relative mt-5 aspect-[4/3] w-full shrink-0 bg-molave-raised sm:aspect-video">
+        {/* Big Photo: scrolls naturally, does NOT freeze over the content */}
+        <div className="relative mt-4 aspect-[4/3] w-full shrink-0 bg-molave-raised sm:aspect-video">
           <span className="absolute left-3 top-3 z-10 rounded-sm bg-capiz px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.15em] text-iron">
             Photo
           </span>
@@ -200,7 +201,6 @@ export default function ProjectModal({
             ))}
           </div>
         )}
-        </div>
 
         <div className="grid grid-cols-3 gap-4 border-y border-iron/15 px-6 py-5 sm:px-8">
           <div>
