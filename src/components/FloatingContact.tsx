@@ -78,19 +78,46 @@ export default function FloatingContact() {
   ]);
   const [input, setInput] = useState("");
   const [chatState, setChatState] = useState<ChatState>({ pendingTopicId: null });
+  const [isTyping, setIsTyping] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
-    scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight });
-  }, [messages, chatOpen]);
+    return () => {
+      if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current);
+    };
+  }, []);
+
+  useEffect(() => {
+    scrollRef.current?.scrollTo({
+      top: scrollRef.current.scrollHeight,
+      behavior: "smooth",
+    });
+  }, [messages, chatOpen, isTyping]);
 
   const send = (text: string) => {
     const trimmed = text.trim();
-    if (!trimmed) return;
-    const { text: reply, nextState } = respond(trimmed, chatState);
-    setMessages((m) => [...m, { from: "user", text: trimmed }, { from: "bot", text: reply }]);
-    setChatState(nextState);
+    if (!trimmed || isTyping) return;
+
+    // Immediately display user query
+    setMessages((m) => [...m, { from: "user", text: trimmed }]);
     setInput("");
+    setIsTyping(true);
+
+    const { text: reply, nextState } = respond(trimmed, chatState);
+
+    // Realistic typing delay proportional to response length (750ms - 1200ms)
+    const delay = Math.min(1200, Math.max(750, reply.length * 4 + 400));
+
+    if (typingTimeoutRef.current) {
+      clearTimeout(typingTimeoutRef.current);
+    }
+
+    typingTimeoutRef.current = setTimeout(() => {
+      setMessages((m) => [...m, { from: "bot", text: reply }]);
+      setChatState(nextState);
+      setIsTyping(false);
+    }, delay);
   };
 
   return (
@@ -180,6 +207,27 @@ export default function FloatingContact() {
               {m.text}
             </div>
           ))}
+
+          {isTyping && (
+            <div
+              className="w-fit rounded-2xl rounded-tl-sm bg-capiz px-4 py-3 text-iron shadow-sm"
+              role="status"
+              aria-label="Tristone Concierge is typing"
+            >
+              <span className="sr-only">Tristone Concierge is typing...</span>
+              <div className="flex items-center gap-1.5 py-1">
+                <span className="typing-dot h-2 w-2 rounded-full bg-iron/70" />
+                <span
+                  className="typing-dot h-2 w-2 rounded-full bg-iron/70"
+                  style={{ animationDelay: "0.2s" }}
+                />
+                <span
+                  className="typing-dot h-2 w-2 rounded-full bg-iron/70"
+                  style={{ animationDelay: "0.4s" }}
+                />
+              </div>
+            </div>
+          )}
         </div>
 
         <div className="flex flex-wrap gap-2 px-5 pb-4">
@@ -187,8 +235,13 @@ export default function FloatingContact() {
             <button
               key={q}
               type="button"
+              disabled={isTyping}
               onClick={() => send(q)}
-              className="no-focus-ring rounded-full border border-ember-dim/30 px-3 py-1.5 text-[11px] text-capiz-dim/80 transition-colors hover:border-ember-light/60 hover:text-ember-light"
+              className={`no-focus-ring rounded-full border border-ember-dim/30 px-3 py-1.5 text-[11px] text-capiz-dim/80 transition-colors ${
+                isTyping
+                  ? "cursor-not-allowed opacity-50"
+                  : "cursor-pointer hover:border-ember-light/60 hover:text-ember-light"
+              }`}
             >
               {q}
             </button>
@@ -205,13 +258,15 @@ export default function FloatingContact() {
           <input
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            placeholder="Type your question..."
-            className="flex-1 rounded-full bg-molave-raised px-4 py-2.5 text-sm text-capiz placeholder:text-capiz-dim/40 outline-none focus:ring-1 focus:ring-ember-dim/50"
+            disabled={isTyping}
+            placeholder={isTyping ? "Tristone Concierge is typing..." : "Type your question..."}
+            className="flex-1 rounded-full bg-molave-raised px-4 py-2.5 text-sm text-capiz placeholder:text-capiz-dim/40 outline-none focus:ring-1 focus:ring-ember-dim/50 disabled:opacity-60"
           />
           <button
             type="submit"
+            disabled={isTyping || !input.trim()}
             aria-label="Send"
-            className="no-focus-ring flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-ember text-white transition-colors hover:bg-ember-light"
+            className="no-focus-ring flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-ember text-white transition-colors hover:bg-ember-light disabled:cursor-not-allowed disabled:opacity-50"
           >
             <SendIcon className="h-4 w-4" />
           </button>
