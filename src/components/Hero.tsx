@@ -143,7 +143,7 @@ export default function Hero() {
           <h1 className="font-display text-4xl leading-[1.05] text-white sm:text-5xl">
             Your <em className="italic" style={{ color: BURNT }}>dream home</em> starts here.
           </h1>
-          <p className="mt-4 max-w-md text-base leading-relaxed text-white/80">
+          <p className="mt-4 hidden max-w-md text-base leading-relaxed text-white/80 md:block">
             {siteInfo.description}. PAG-IBIG Financing and bank loan
             assistance available on every build.
           </p>

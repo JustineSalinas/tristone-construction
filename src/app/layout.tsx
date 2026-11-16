@@ -22,12 +22,17 @@ export const viewport: Viewport = {
   initialScale: 1,
   maximumScale: 5,
   themeColor: "#f7f3ec",
+  colorScheme: "light",
 };
 
 export const metadata: Metadata = {
   title: "Tristone Construction | Quality Beyond Promises",
   description:
     "Residential and commercial construction in Bacolod City, Negros Occidental & Iloilo City. Build Now Pay Later and PAG-IBIG Financing available.",
+  other: {
+    "color-scheme": "light only",
+    "supported-color-schemes": "light",
+  },
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

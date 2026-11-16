@@ -8,6 +8,7 @@ import { siteInfo } from "@/lib/content";
 const primaryLink = { href: "#top", label: "Home" };
 
 const links = [
+  { href: "#about", label: "About" },
   { href: "#projects", label: "Our Builds" },
   { href: "#financing", label: "Financing" },
   { href: "#testimonials", label: "Reviews" },
