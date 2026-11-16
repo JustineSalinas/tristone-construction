@@ -1,10 +1,18 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 
 const USER_NAME_KEY = "tristone-user-name";
 // Relaxed 12-second pace so visitors can comfortably read and inspect each highlighted section
 const AUTO_ADVANCE_MS = 12000;
+
+interface TargetRect {
+  top: number;
+  left: number;
+  width: number;
+  height: number;
+  radius: number;
+}
 
 const steps = [
   {
@@ -88,10 +96,73 @@ export default function OnboardingTour() {
   const [progress, setProgress] = useState(0);
   const [isHoverPaused, setIsHoverPaused] = useState(false);
   const [isUserPaused, setIsUserPaused] = useState(false);
-  const highlightedRef = useRef<HTMLElement | null>(null);
+  const [spotlightRect, setSpotlightRect] = useState<TargetRect | null>(null);
+
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const trackingRafRef = useRef<number | null>(null);
 
   const isPaused = isHoverPaused || isUserPaused;
+
+  // Calculates bounding box for the current target element
+  const updateSpotlightRect = useCallback(() => {
+    if (stage !== "touring") {
+      setSpotlightRect(null);
+      return;
+    }
+    const currentStep = steps[stepIndex];
+    if (!currentStep) return;
+    const el = document.getElementById(currentStep.id);
+    if (!el) return;
+
+    const r = el.getBoundingClientRect();
+    const vw = typeof window !== "undefined" ? window.innerWidth : 1200;
+    const isFab = currentStep.id === "concierge-fab";
+
+    if (isFab) {
+      setSpotlightRect({
+        top: Math.round(r.top - 6),
+        left: Math.round(r.left - 6),
+        width: Math.round(r.width + 12),
+        height: Math.round(r.height + 12),
+        radius: 9999,
+      });
+    } else {
+      const isFullWidth = r.width >= vw - 32;
+      const padX = isFullWidth ? 6 : 10;
+      const padY = 8;
+      const left = isFullWidth ? 6 : Math.max(6, Math.round(r.left - padX));
+      const width = isFullWidth
+        ? vw - 12
+        : Math.min(vw - left - 6, Math.round(r.width + padX * 2));
+
+      setSpotlightRect({
+        top: Math.round(r.top - padY),
+        left,
+        width,
+        height: Math.round(r.height + padY * 2),
+        radius: isFullWidth ? 16 : 22,
+      });
+    }
+  }, [stage, stepIndex]);
+
+  // Track scrolling and resizing to keep spotlight locked to target
+  useEffect(() => {
+    if (stage !== "touring") return;
+
+    updateSpotlightRect();
+
+    const onScrollOrResize = () => {
+      updateSpotlightRect();
+    };
+
+    window.addEventListener("scroll", onScrollOrResize, { passive: true });
+    window.addEventListener("resize", onScrollOrResize, { passive: true });
+
+    return () => {
+      window.removeEventListener("scroll", onScrollOrResize);
+      window.removeEventListener("resize", onScrollOrResize);
+    };
+  }, [stage, stepIndex, updateSpotlightRect]);
 
   // Trigger prompt by default on every page load or refresh
   useEffect(() => {
@@ -102,7 +173,6 @@ export default function OnboardingTour() {
       // ignore
     }
 
-    // Short delay so layout and hero settle before presenting prompt
     const id = setTimeout(() => {
       setStage("ask");
     }, 1100);
@@ -113,7 +183,6 @@ export default function OnboardingTour() {
   // Listen for manual trigger from Tour button beside chatbot
   useEffect(() => {
     const handleStartEvent = () => {
-      clearHighlight();
       setIsUserPaused(false);
       setStage("ask");
     };
@@ -121,31 +190,32 @@ export default function OnboardingTour() {
     return () => window.removeEventListener("start-tristone-tour", handleStartEvent);
   }, []);
 
-  const clearHighlight = () => {
-    if (highlightedRef.current) {
-      highlightedRef.current.classList.remove("tour-highlight");
-      highlightedRef.current = null;
-    }
-  };
-
   const goToStep = (idx: number) => {
-    clearHighlight();
-    const step = steps[idx];
-    const el = document.getElementById(step.id);
-    if (el) {
-      el.classList.add("tour-highlight");
-      highlightedRef.current = el;
-      if (step.id !== "concierge-fab") {
-        el.scrollIntoView({ behavior: "smooth", block: "center" });
-      }
+    const nextStep = steps[idx];
+    const el = document.getElementById(nextStep.id);
+    if (el && nextStep.id !== "concierge-fab") {
+      el.scrollIntoView({ behavior: "smooth", block: "center" });
     }
+
     setStepIndex(idx);
     setProgress(0);
+
+    // Run animation frame tracking loop during smooth scroll (~850ms)
+    if (trackingRafRef.current) cancelAnimationFrame(trackingRafRef.current);
+    const start = performance.now();
+    const trackLoop = (now: number) => {
+      updateSpotlightRect();
+      if (now - start < 850) {
+        trackingRafRef.current = requestAnimationFrame(trackLoop);
+      }
+    };
+    trackingRafRef.current = requestAnimationFrame(trackLoop);
   };
 
   const endTour = () => {
-    clearHighlight();
+    if (trackingRafRef.current) cancelAnimationFrame(trackingRafRef.current);
     setIsUserPaused(false);
+    setSpotlightRect(null);
     setStage("hidden");
   };
 
@@ -207,8 +277,6 @@ export default function OnboardingTour() {
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [stage, stepIndex, isPaused]);
-
-  useEffect(() => clearHighlight, []);
 
   if (stage === "hidden") return null;
 
@@ -283,122 +351,191 @@ export default function OnboardingTour() {
     );
   }
 
-  // Active step card: streamlined, compact, non-flooding for mobile viewports
+  // Active step card & Spotlight Elements
   const step = steps[stepIndex];
   const greeting = name.trim() ? `${name.trim()}, ` : "";
+  const isFabStep = step.id === "concierge-fab";
 
   return (
-    <div
-      className="pointer-events-none fixed inset-x-4 bottom-5 z-[200] flex justify-center sm:bottom-6 sm:inset-x-auto sm:right-6 sm:w-full sm:max-w-md"
-      onMouseEnter={() => setIsHoverPaused(true)}
-      onMouseLeave={() => setIsHoverPaused(false)}
-      onTouchStart={() => setIsHoverPaused(true)}
-      onTouchEnd={() => setIsHoverPaused(false)}
-    >
-      <div className="pointer-events-auto w-full rounded-2xl border border-iron/15 bg-white/98 text-iron shadow-[0_24px_50px_-12px_rgba(26,20,16,0.25),0_4px_12px_rgba(0,0,0,0.06)] backdrop-blur-md overflow-hidden">
-        {/* Progress bar with pause state */}
-        <div className="h-[3px] w-full bg-iron/10">
-          <div
-            className={`h-full transition-[width] duration-100 ease-linear ${
-              isPaused ? "bg-ember/60" : "bg-ember"
-            }`}
-            style={{ width: `${progress}%` }}
-          />
-        </div>
+    <>
+      {/* SVG Mask Definition: Clear Cutout for the Highlighted Target */}
+      {spotlightRect && (
+        <svg
+          aria-hidden="true"
+          className="pointer-events-none fixed inset-0 z-[138] h-full w-full"
+          style={{ width: "100%", height: "100%" }}
+        >
+          <defs>
+            <mask id="tristone-spotlight-mask" maskUnits="userSpaceOnUse" x="0" y="0" width="100%" height="100%">
+              {/* White fills everything: masked in (blurred & dimmed) */}
+              <rect x="0" y="0" width="100%" height="100%" fill="white" />
+              {/* Black cutout: transparent (100% crystal clear & unblurred) */}
+              <rect
+                id="spotlight-hole"
+                x={spotlightRect.left}
+                y={spotlightRect.top}
+                width={spotlightRect.width}
+                height={spotlightRect.height}
+                rx={spotlightRect.radius}
+                ry={spotlightRect.radius}
+                fill="black"
+              />
+            </mask>
+          </defs>
+        </svg>
+      )}
 
-        <div className="p-4 sm:p-5">
-          {/* Header row: feature tag + step count + pause/play + close */}
-          <div className="flex items-center justify-between text-[10px] font-bold uppercase tracking-[0.2em] text-ember">
-            <span className="truncate max-w-[180px] sm:max-w-[210px]">{step.tag}</span>
-            <div className="flex items-center gap-2 shrink-0">
-              {/* Manual Pause / Play button */}
+      {/* Dimmed & Blurred Backdrop: Applies blur to everything outside the spotlight cutout */}
+      {spotlightRect && (
+        <div
+          aria-hidden="true"
+          className="pointer-events-none fixed inset-0 z-[139] transition-opacity duration-300"
+          style={{
+            backgroundColor: "rgba(24, 19, 15, 0.48)",
+            backdropFilter: "blur(7px)",
+            WebkitBackdropFilter: "blur(7px)",
+            mask: "url(#tristone-spotlight-mask)",
+            WebkitMask: "url(#tristone-spotlight-mask)",
+          }}
+        />
+      )}
+
+      {/* Glowing Architectural Frame Around Clear Target */}
+      {spotlightRect && (
+        <div
+          aria-hidden="true"
+          className="pointer-events-none fixed z-[145] transition-all duration-300 ease-out"
+          style={{
+            top: `${spotlightRect.top}px`,
+            left: `${spotlightRect.left}px`,
+            width: `${spotlightRect.width}px`,
+            height: `${spotlightRect.height}px`,
+            borderRadius: `${spotlightRect.radius}px`,
+            border: "2px solid #d9531f",
+            boxShadow:
+              "0 0 0 1px rgba(255, 255, 255, 0.4), 0 0 32px rgba(217, 83, 31, 0.35), inset 0 0 18px rgba(217, 83, 31, 0.08)",
+          }}
+        >
+          {/* Architectural Live Focus Badge */}
+          <div className="absolute -top-3 left-4 flex items-center gap-1.5 rounded-full bg-ember px-2.5 py-0.5 text-[9px] font-bold uppercase tracking-widest text-white shadow-md">
+            <span className="h-1.5 w-1.5 rounded-full bg-white animate-pulse" />
+            <span>{step.tag}</span>
+          </div>
+        </div>
+      )}
+
+      {/* Tour Step Card: positioned cleanly, shifted away from floating dock on step 12 */}
+      <div
+        className={`pointer-events-none fixed z-[200] flex justify-center transition-all duration-300 ${
+          isFabStep
+            ? "inset-x-4 bottom-24 sm:inset-x-auto sm:right-6 sm:bottom-28 sm:w-full sm:max-w-md"
+            : "inset-x-4 bottom-5 sm:inset-x-auto sm:right-6 sm:bottom-6 sm:w-full sm:max-w-md"
+        }`}
+        onMouseEnter={() => setIsHoverPaused(true)}
+        onMouseLeave={() => setIsHoverPaused(false)}
+        onTouchStart={() => setIsHoverPaused(true)}
+        onTouchEnd={() => setIsHoverPaused(false)}
+      >
+        <div className="pointer-events-auto w-full rounded-2xl border border-iron/15 bg-white/98 text-iron shadow-[0_24px_50px_-12px_rgba(26,20,16,0.32),0_4px_16px_rgba(0,0,0,0.08),0_0_0_1px_rgba(255,255,255,0.8)] backdrop-blur-xl overflow-hidden">
+          {/* Progress bar with pause state */}
+          <div className="h-[3px] w-full bg-iron/10">
+            <div
+              className={`h-full transition-[width] duration-100 ease-linear ${
+                isPaused ? "bg-ember/60" : "bg-ember"
+              }`}
+              style={{ width: `${progress}%` }}
+            />
+          </div>
+
+          <div className="p-4 sm:p-5">
+            {/* Header row: feature tag + step count + pause/play + close */}
+            <div className="flex items-center justify-between text-[10px] font-bold uppercase tracking-[0.2em] text-ember">
+              <span className="truncate max-w-[170px] sm:max-w-[210px]">{step.tag}</span>
+              <div className="flex items-center gap-2 shrink-0">
+                {/* Manual Pause / Play button */}
+                <button
+                  type="button"
+                  onClick={() => setIsUserPaused((prev) => !prev)}
+                  className="flex items-center gap-1 rounded px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-wider text-iron/60 hover:bg-iron/5 hover:text-iron transition-colors"
+                  title={isUserPaused ? "Resume auto-advance" : "Pause auto-advance"}
+                  aria-label={isUserPaused ? "Resume tour" : "Pause tour"}
+                >
+                  {isUserPaused ? (
+                    <>
+                      <svg viewBox="0 0 24 24" className="h-2.5 w-2.5 fill-current text-ember">
+                        <polygon points="5 3 19 12 5 21 5 3" />
+                      </svg>
+                      <span className="text-ember font-mono">Resume</span>
+                    </>
+                  ) : (
+                    <>
+                      <svg viewBox="0 0 24 24" className="h-2.5 w-2.5 fill-current text-iron/60">
+                        <rect x="6" y="4" width="4" height="16" />
+                        <rect x="14" y="4" width="4" height="16" />
+                      </svg>
+                      <span className="font-mono text-iron/50">Pause</span>
+                    </>
+                  )}
+                </button>
+
+                <span className="font-mono text-iron/60">
+                  {stepIndex + 1} / {steps.length}
+                </span>
+
+                <button
+                  type="button"
+                  onClick={endTour}
+                  className="text-iron/40 hover:text-iron text-base leading-none p-0.5"
+                  aria-label="Exit tour"
+                >
+                  &times;
+                </button>
+              </div>
+            </div>
+
+            {/* Title & Concise text with smooth fade transition */}
+            <div key={stepIndex} className="animate-tour-step">
+              <h4 className="mt-1.5 font-display text-sm sm:text-base font-bold text-iron">
+                {step.title}
+              </h4>
+              <p className="mt-1 text-xs leading-relaxed text-iron/75">
+                {greeting}
+                {step.text}
+              </p>
+            </div>
+
+            {/* Controls */}
+            <div className="mt-3.5 flex items-center justify-between pt-2.5 border-t border-iron/10">
               <button
                 type="button"
-                onClick={() => setIsUserPaused((prev) => !prev)}
-                className="flex items-center gap-1 rounded px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-wider text-iron/60 hover:bg-iron/5 hover:text-iron transition-colors"
-                title={isUserPaused ? "Resume auto-advance" : "Pause auto-advance"}
-                aria-label={isUserPaused ? "Resume tour" : "Pause tour"}
+                onClick={() => goToStep(Math.max(0, stepIndex - 1))}
+                disabled={stepIndex === 0}
+                className="text-xs font-semibold text-iron/60 hover:text-iron disabled:opacity-25 disabled:cursor-not-allowed transition-colors"
               >
-                {isUserPaused ? (
-                  <>
-                    <svg viewBox="0 0 24 24" className="h-2.5 w-2.5 fill-current text-ember">
-                      <polygon points="5 3 19 12 5 21 5 3" />
-                    </svg>
-                    <span className="text-ember font-mono">Resume</span>
-                  </>
-                ) : (
-                  <>
-                    <svg viewBox="0 0 24 24" className="h-2.5 w-2.5 fill-current text-iron/60">
-                      <rect x="6" y="4" width="4" height="16" />
-                      <rect x="14" y="4" width="4" height="16" />
-                    </svg>
-                    <span className="font-mono text-iron/50">Pause</span>
-                  </>
-                )}
+                &larr; Back
               </button>
 
-              <span className="font-mono text-iron/60">
-                {stepIndex + 1} / {steps.length}
-              </span>
-
               <button
                 type="button"
-                onClick={endTour}
-                className="text-iron/40 hover:text-iron text-base leading-none p-0.5"
-                aria-label="Exit tour"
+                onClick={() => {
+                  if (stepIndex < steps.length - 1) {
+                    goToStep(stepIndex + 1);
+                  } else {
+                    endTour();
+                  }
+                }}
+                className="rounded-lg bg-ember px-4 py-1.5 font-display text-xs font-bold text-white transition-colors hover:bg-ember-light active:scale-[0.98]"
               >
-                &times;
+                {stepIndex < steps.length - 1 ? "Next \u2192" : "Finish \u2713"}
               </button>
             </div>
-          </div>
-
-          {/* Title & Concise text with smooth fade transition */}
-          <div key={stepIndex} className="animate-tour-step">
-            <h4 className="mt-1.5 font-display text-sm sm:text-base font-bold text-iron">
-              {step.title}
-            </h4>
-            <p className="mt-1 text-xs leading-relaxed text-iron/75">
-              {greeting}
-              {step.text}
-            </p>
-          </div>
-
-          {/* Controls */}
-          <div className="mt-3.5 flex items-center justify-between pt-2.5 border-t border-iron/10">
-            <button
-              type="button"
-              onClick={() => {
-                goToStep(Math.max(0, stepIndex - 1));
-              }}
-              disabled={stepIndex === 0}
-              className="text-xs font-semibold text-iron/60 hover:text-iron disabled:opacity-25 disabled:cursor-not-allowed transition-colors"
-            >
-              &larr; Back
-            </button>
-
-            <button
-              type="button"
-              onClick={() => {
-                if (stepIndex < steps.length - 1) {
-                  goToStep(stepIndex + 1);
-                } else {
-                  endTour();
-                }
-              }}
-              className="rounded-lg bg-ember px-4 py-1.5 font-display text-xs font-bold text-white transition-colors hover:bg-ember-light active:scale-[0.98]"
-            >
-              {stepIndex < steps.length - 1 ? "Next \u2192" : "Finish \u2713"}
-            </button>
           </div>
         </div>
       </div>
 
       <style>{`
-        .tour-highlight {
-          outline: 2px solid #d9531f !important;
-          outline-offset: -2px !important;
-          box-shadow: 0 0 0 4px rgba(217, 83, 31, 0.22) !important;
-          transition: outline 0.3s ease, box-shadow 0.3s ease !important;
+        #spotlight-hole {
+          transition: x 0.3s ease-out, y 0.3s ease-out, width 0.3s ease-out, height 0.3s ease-out, rx 0.3s ease-out;
         }
         @keyframes tour-step-fade {
           from {
@@ -414,6 +551,6 @@ export default function OnboardingTour() {
           animation: tour-step-fade 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
       `}</style>
-    </div>
+    </>
   );
 }
