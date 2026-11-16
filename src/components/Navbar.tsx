@@ -62,7 +62,10 @@ export default function Navbar() {
   }, [activeHref]);
 
   return (
-    <header className="sticky top-0 z-50 border-b border-iron/10 bg-capiz/95 backdrop-blur-md">
+    <header
+      className="sticky top-0 z-50 border-b border-iron/10 bg-capiz/95 backdrop-blur-md"
+      style={{ colorScheme: "only light" }}
+    >
       <div className="flex w-full items-center justify-between gap-8 px-5 py-3 sm:px-8 lg:px-12 xl:px-16">
         <a href="#top" className="flex items-center gap-2.5">
           <Image

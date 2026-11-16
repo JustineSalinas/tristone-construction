@@ -1,8 +1,8 @@
 @import "tailwindcss";
 
 :root {
-  color-scheme: light;
-  forced-color-adjust: none;
+  color-scheme: only light !important;
+  forced-color-adjust: none !important;
   /* Light, ivory/creamy premium ground. "molave" now names the page's
      light ivory tones; "molave-raised" stays dark on purpose, as the
      carved hardwood frame/accent colour against the cream walls. */
@@ -38,17 +38,27 @@
 
 html,
 body {
-  color-scheme: light !important;
-  forced-color-adjust: none;
+  color-scheme: only light !important;
+  forced-color-adjust: none !important;
+  background-color: var(--molave) !important;
+  color: var(--iron) !important;
 }
 
 @media (prefers-color-scheme: dark) {
   :root,
   html,
   body {
-    color-scheme: light !important;
-    forced-color-adjust: none;
+    color-scheme: only light !important;
+    forced-color-adjust: none !important;
+    background-color: var(--molave) !important;
+    color: var(--iron) !important;
   }
+}
+
+*,
+*::before,
+*::after {
+  forced-color-adjust: none;
 }
 
 html {

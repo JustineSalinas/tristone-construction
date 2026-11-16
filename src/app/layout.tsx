@@ -22,7 +22,6 @@ export const viewport: Viewport = {
   initialScale: 1,
   maximumScale: 5,
   themeColor: "#f7f3ec",
-  colorScheme: "light",
 };
 
 export const metadata: Metadata = {
@@ -30,7 +29,7 @@ export const metadata: Metadata = {
   description:
     "Residential and commercial construction in Bacolod City, Negros Occidental & Iloilo City. Build Now Pay Later and PAG-IBIG Financing available.",
   other: {
-    "color-scheme": "light only",
+    "color-scheme": "only light",
     "supported-color-schemes": "light",
   },
 };
@@ -40,8 +39,13 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     <html
       lang="en"
       className={`${besley.variable} ${albertSans.variable} h-full antialiased`}
+      style={{ colorScheme: "only light" }}
     >
-      <body className="min-h-full flex flex-col bg-molave text-iron font-sans">
+      <head>
+        <meta name="color-scheme" content="only light" />
+        <meta name="supported-color-schemes" content="light" />
+      </head>
+      <body className="min-h-full flex flex-col bg-molave text-iron font-sans" style={{ colorScheme: "only light" }}>
         <Preloader />
         <ScrollProgress />
         {children}

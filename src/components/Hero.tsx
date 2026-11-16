@@ -69,6 +69,7 @@ export default function Hero() {
       id="top"
       ref={sectionRef}
       className="relative flex min-h-[calc(100svh-70px)] w-full flex-col bg-capiz"
+      style={{ colorScheme: "only light" }}
     >
       {/* Photo stage: fills the rest of the section so the dark gradient reaches all the way to the foot copy */}
       <div className="relative z-0 w-full min-h-[560px] flex-1">
