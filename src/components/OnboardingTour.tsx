@@ -3,7 +3,8 @@
 import { useEffect, useRef, useState } from "react";
 
 const USER_NAME_KEY = "tristone-user-name";
-const AUTO_ADVANCE_MS = 6500;
+// Relaxed 12-second pace so visitors can comfortably read and inspect each highlighted section
+const AUTO_ADVANCE_MS = 12000;
 
 const steps = [
   {
@@ -85,9 +86,12 @@ export default function OnboardingTour() {
   const [name, setName] = useState("");
   const [stepIndex, setStepIndex] = useState(0);
   const [progress, setProgress] = useState(0);
-  const [isPaused, setIsPaused] = useState(false);
+  const [isHoverPaused, setIsHoverPaused] = useState(false);
+  const [isUserPaused, setIsUserPaused] = useState(false);
   const highlightedRef = useRef<HTMLElement | null>(null);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  const isPaused = isHoverPaused || isUserPaused;
 
   // Trigger prompt by default on every page load or refresh
   useEffect(() => {
@@ -110,6 +114,7 @@ export default function OnboardingTour() {
   useEffect(() => {
     const handleStartEvent = () => {
       clearHighlight();
+      setIsUserPaused(false);
       setStage("ask");
     };
     window.addEventListener("start-tristone-tour", handleStartEvent);
@@ -140,6 +145,7 @@ export default function OnboardingTour() {
 
   const endTour = () => {
     clearHighlight();
+    setIsUserPaused(false);
     setStage("hidden");
   };
 
@@ -151,6 +157,7 @@ export default function OnboardingTour() {
         // ignore
       }
     }
+    setIsUserPaused(false);
     setStage("touring");
     goToStep(0);
   };
@@ -166,17 +173,20 @@ export default function OnboardingTour() {
         if (stepIndex > 0) goToStep(stepIndex - 1);
       } else if (e.key === "Escape") {
         endTour();
+      } else if (e.key === " ") {
+        e.preventDefault();
+        setIsUserPaused((prev) => !prev);
       }
     };
     window.addEventListener("keydown", handleKey);
     return () => window.removeEventListener("keydown", handleKey);
   }, [stage, stepIndex]);
 
-  // Auto-advance with progress bar (pauses on hover or touch)
+  // Relaxed auto-advance with progress bar (resumes smoothly from current progress)
   useEffect(() => {
     if (stage !== "touring" || isPaused) return;
-    setProgress(0);
-    const start = Date.now();
+
+    const start = Date.now() - (progress / 100) * AUTO_ADVANCE_MS;
     if (timerRef.current) clearInterval(timerRef.current);
 
     timerRef.current = setInterval(() => {
@@ -229,7 +239,7 @@ export default function OnboardingTour() {
             Take a 1-minute site tour?
           </h3>
           <p className="mt-1 text-xs text-iron/70 leading-relaxed">
-            Walk through our active builds, 3D floor plans, financing options, and on-site videos.
+            Walk through our active builds, 3D floor plans, financing options, and on-site videos at a comfortable pace.
           </p>
 
           <form
@@ -280,28 +290,57 @@ export default function OnboardingTour() {
   return (
     <div
       className="pointer-events-none fixed inset-x-4 bottom-5 z-[200] flex justify-center sm:bottom-6 sm:inset-x-auto sm:right-6 sm:w-full sm:max-w-md"
-      onMouseEnter={() => setIsPaused(true)}
-      onMouseLeave={() => setIsPaused(false)}
-      onTouchStart={() => setIsPaused(true)}
-      onTouchEnd={() => setIsPaused(false)}
+      onMouseEnter={() => setIsHoverPaused(true)}
+      onMouseLeave={() => setIsHoverPaused(false)}
+      onTouchStart={() => setIsHoverPaused(true)}
+      onTouchEnd={() => setIsHoverPaused(false)}
     >
       <div className="pointer-events-auto w-full rounded-2xl border border-iron/15 bg-white/98 text-iron shadow-[0_24px_50px_-12px_rgba(26,20,16,0.25),0_4px_12px_rgba(0,0,0,0.06)] backdrop-blur-md overflow-hidden">
-        {/* Progress bar */}
+        {/* Progress bar with pause state */}
         <div className="h-[3px] w-full bg-iron/10">
           <div
-            className="h-full bg-ember transition-[width] duration-100 ease-linear"
+            className={`h-full transition-[width] duration-100 ease-linear ${
+              isPaused ? "bg-ember/60" : "bg-ember"
+            }`}
             style={{ width: `${progress}%` }}
           />
         </div>
 
         <div className="p-4 sm:p-5">
-          {/* Header row: feature tag + step count + close */}
+          {/* Header row: feature tag + step count + pause/play + close */}
           <div className="flex items-center justify-between text-[10px] font-bold uppercase tracking-[0.2em] text-ember">
-            <span className="truncate max-w-[200px]">{step.tag}</span>
-            <div className="flex items-center gap-2.5 shrink-0">
+            <span className="truncate max-w-[180px] sm:max-w-[210px]">{step.tag}</span>
+            <div className="flex items-center gap-2 shrink-0">
+              {/* Manual Pause / Play button */}
+              <button
+                type="button"
+                onClick={() => setIsUserPaused((prev) => !prev)}
+                className="flex items-center gap-1 rounded px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-wider text-iron/60 hover:bg-iron/5 hover:text-iron transition-colors"
+                title={isUserPaused ? "Resume auto-advance" : "Pause auto-advance"}
+                aria-label={isUserPaused ? "Resume tour" : "Pause tour"}
+              >
+                {isUserPaused ? (
+                  <>
+                    <svg viewBox="0 0 24 24" className="h-2.5 w-2.5 fill-current text-ember">
+                      <polygon points="5 3 19 12 5 21 5 3" />
+                    </svg>
+                    <span className="text-ember font-mono">Resume</span>
+                  </>
+                ) : (
+                  <>
+                    <svg viewBox="0 0 24 24" className="h-2.5 w-2.5 fill-current text-iron/60">
+                      <rect x="6" y="4" width="4" height="16" />
+                      <rect x="14" y="4" width="4" height="16" />
+                    </svg>
+                    <span className="font-mono text-iron/50">Pause</span>
+                  </>
+                )}
+              </button>
+
               <span className="font-mono text-iron/60">
                 {stepIndex + 1} / {steps.length}
               </span>
+
               <button
                 type="button"
                 onClick={endTour}
@@ -313,20 +352,24 @@ export default function OnboardingTour() {
             </div>
           </div>
 
-          {/* Title & Concise text */}
-          <h4 className="mt-1.5 font-display text-sm sm:text-base font-bold text-iron">
-            {step.title}
-          </h4>
-          <p className="mt-1 text-xs leading-relaxed text-iron/75">
-            {greeting}
-            {step.text}
-          </p>
+          {/* Title & Concise text with smooth fade transition */}
+          <div key={stepIndex} className="animate-tour-step">
+            <h4 className="mt-1.5 font-display text-sm sm:text-base font-bold text-iron">
+              {step.title}
+            </h4>
+            <p className="mt-1 text-xs leading-relaxed text-iron/75">
+              {greeting}
+              {step.text}
+            </p>
+          </div>
 
           {/* Controls */}
           <div className="mt-3.5 flex items-center justify-between pt-2.5 border-t border-iron/10">
             <button
               type="button"
-              onClick={() => goToStep(Math.max(0, stepIndex - 1))}
+              onClick={() => {
+                goToStep(Math.max(0, stepIndex - 1));
+              }}
               disabled={stepIndex === 0}
               className="text-xs font-semibold text-iron/60 hover:text-iron disabled:opacity-25 disabled:cursor-not-allowed transition-colors"
             >
@@ -335,9 +378,13 @@ export default function OnboardingTour() {
 
             <button
               type="button"
-              onClick={() =>
-                stepIndex < steps.length - 1 ? goToStep(stepIndex + 1) : endTour()
-              }
+              onClick={() => {
+                if (stepIndex < steps.length - 1) {
+                  goToStep(stepIndex + 1);
+                } else {
+                  endTour();
+                }
+              }}
               className="rounded-lg bg-ember px-4 py-1.5 font-display text-xs font-bold text-white transition-colors hover:bg-ember-light active:scale-[0.98]"
             >
               {stepIndex < steps.length - 1 ? "Next \u2192" : "Finish \u2713"}
@@ -351,7 +398,20 @@ export default function OnboardingTour() {
           outline: 2px solid #d9531f !important;
           outline-offset: -2px !important;
           box-shadow: 0 0 0 4px rgba(217, 83, 31, 0.22) !important;
-          transition: outline 0.25s ease, box-shadow 0.25s ease !important;
+          transition: outline 0.3s ease, box-shadow 0.3s ease !important;
+        }
+        @keyframes tour-step-fade {
+          from {
+            opacity: 0;
+            transform: translateY(3px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+        .animate-tour-step {
+          animation: tour-step-fade 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
       `}</style>
     </div>
