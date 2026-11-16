@@ -123,9 +123,10 @@ export default function FloatingContact() {
 
   return (
     <>
-      {/* Contact dock */}
+      {/* Contact dock: a frosted capsule sits behind the icons so they never
+          look like they're clipping page content when text scrolls underneath. */}
       <div
-        className="fixed bottom-24 right-4 z-40 flex flex-col gap-3 sm:right-6 sm:gap-3.5"
+        className="fixed bottom-24 right-4 z-40 flex flex-col gap-3 rounded-full bg-molave/55 p-1.5 shadow-[0_10px_30px_-10px_rgba(0,0,0,0.25)] backdrop-blur-md sm:right-6 sm:gap-3.5 sm:bg-transparent sm:p-0 sm:shadow-none sm:backdrop-blur-none"
         style={{
           opacity: chatOpen ? 0 : 1,
           transform: chatOpen ? "translateY(8px) scale(0.95)" : "translateY(0) scale(1)",

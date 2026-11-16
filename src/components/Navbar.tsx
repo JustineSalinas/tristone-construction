@@ -86,7 +86,7 @@ export default function Navbar() {
           </span>
         </a>
 
-        <nav ref={navRef} className="relative hidden items-center gap-1 rounded-full bg-iron/5 p-1 md:flex">
+        <nav ref={navRef} className="relative hidden items-center gap-1 rounded-full bg-iron/5 p-1 lg:flex">
           <span
             aria-hidden="true"
             className="absolute top-1 bottom-1 rounded-full bg-iron transition-[left,width] duration-300 ease-out"
@@ -110,7 +110,7 @@ export default function Navbar() {
 
         <a
           href="#contact"
-          className="hidden items-center gap-2 rounded-full bg-iron py-1.5 pl-4 pr-1.5 text-sm font-medium text-capiz transition-colors hover:bg-iron/90 md:inline-flex"
+          className="hidden items-center gap-2 rounded-full bg-iron py-1.5 pl-4 pr-1.5 text-sm font-medium text-capiz transition-colors hover:bg-iron/90 lg:inline-flex"
         >
           Start Your Build
           <span className="flex h-7 w-7 items-center justify-center rounded-full bg-ember">
@@ -124,7 +124,7 @@ export default function Navbar() {
           type="button"
           aria-label="Toggle menu"
           onClick={() => setOpen((v) => !v)}
-          className="flex h-11 w-11 flex-col items-center justify-center gap-1.5 md:hidden"
+          className="flex h-11 w-11 flex-col items-center justify-center gap-1.5 lg:hidden"
         >
           <span className="h-0.5 w-6 bg-iron" />
           <span className="h-0.5 w-6 bg-iron" />
@@ -133,7 +133,7 @@ export default function Navbar() {
       </div>
 
       {open && (
-        <nav className="flex flex-col gap-1 border-t border-iron/10 bg-capiz px-5 pb-4 md:hidden">
+        <nav className="flex flex-col gap-1 border-t border-iron/10 bg-capiz px-5 pb-4 lg:hidden">
           <a
             href={primaryLink.href}
             onClick={() => setOpen(false)}

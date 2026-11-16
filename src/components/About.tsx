@@ -65,7 +65,7 @@ const hallmarks = [
 export default function About() {
   return (
     <section id="about" className="relative bg-molave py-20 sm:py-28">
-      <div className="mx-auto max-w-6xl px-5 sm:px-8">
+      <div className="mx-auto max-w-6xl px-5 pr-16 sm:px-8">
         {/* Monograph Header */}
         <Reveal>
           <div className="border-t border-iron/15 pt-8 sm:pt-10">

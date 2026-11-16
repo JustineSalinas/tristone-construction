@@ -100,6 +100,7 @@ export default function OnboardingTour() {
 
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const trackingRafRef = useRef<number | null>(null);
+  const activeStepIndexRef = useRef(0);
 
   const isPaused = isHoverPaused || isUserPaused;
 
@@ -109,7 +110,7 @@ export default function OnboardingTour() {
       setSpotlight(null);
       return;
     }
-    const currentStep = steps[stepIndex];
+    const currentStep = steps[activeStepIndexRef.current];
     if (!currentStep) return;
     const el = document.getElementById(currentStep.id);
     if (!el) return;
@@ -171,7 +172,7 @@ export default function OnboardingTour() {
       height,
       radius: isMobile ? 16 : 20,
     });
-  }, [stage, stepIndex]);
+  }, [stage]);
 
   // Track scrolling and resizing passively so spotlight stays locked 1:1
   useEffect(() => {
@@ -224,6 +225,7 @@ export default function OnboardingTour() {
     const nextStep = steps[idx];
     const el = document.getElementById(nextStep.id);
 
+    activeStepIndexRef.current = idx;
     setStepIndex(idx);
     setProgress(0);
 
@@ -232,14 +234,21 @@ export default function OnboardingTour() {
       const targetY = Math.max(0, el.offsetTop - 74);
       window.scrollTo({ top: targetY, behavior: "smooth" });
 
-      // Live 60fps tracking loop during smooth scroll: zero latency, zero late popping
+      // Live 60fps tracking loop during smooth scroll: tracks until the scroll
+      // position actually stabilizes (native smooth-scroll duration varies with
+      // distance, so a fixed timer can stop tracking before the scroll settles,
+      // freezing the spotlight on a stale position), with a safety cap.
       const start = performance.now();
+      let lastY = window.scrollY;
+      let stableFrames = 0;
       const trackLoop = (now: number) => {
         updateSpotlight();
-        if (now - start < 550) {
+        const y = window.scrollY;
+        stableFrames = Math.abs(y - lastY) < 0.5 ? stableFrames + 1 : 0;
+        lastY = y;
+        if (stableFrames < 3 && now - start < 2000) {
           trackingRafRef.current = requestAnimationFrame(trackLoop);
         } else {
-          // Settle final position accurately
           updateSpotlight();
         }
       };
@@ -399,47 +408,51 @@ export default function OnboardingTour() {
   const greeting = name.trim() ? `${name.trim()}, ` : "";
   const isFabStep = step.id === "concierge-fab";
 
+  // Classic four-panel spotlight: top/bottom/left/right rectangles around the cutout.
+  // (A single element combining `mask` + `backdrop-filter` silently fails to render
+  // in some Chromium builds, so we avoid that combo entirely and use plain rects.)
+  const panelStyle = (rect: { top: number; left: number; width: number; height: number }) =>
+    ({
+      position: "fixed" as const,
+      top: rect.top,
+      left: rect.left,
+      width: Math.max(0, rect.width),
+      height: Math.max(0, rect.height),
+      backgroundColor: "rgba(22, 17, 13, 0.48)",
+      backdropFilter: "blur(7px)",
+      WebkitBackdropFilter: "blur(7px)",
+    });
+
   return (
     <>
-      {/* SVG Mask Definition: 100% Matching Clear Cutout */}
-      {spotlight && (
-        <svg
-          aria-hidden="true"
-          className="pointer-events-none fixed inset-0 z-[138] h-full w-full"
-          style={{ width: "100%", height: "100%" }}
-        >
-          <defs>
-            <mask id="tristone-spotlight-mask" maskUnits="userSpaceOnUse" x="0" y="0" width="100%" height="100%">
-              {/* White fills everything: masked in (blurred & dimmed) */}
-              <rect x="0" y="0" width="100%" height="100%" fill="white" />
-              {/* Black cutout: transparent (100% crystal clear & unblurred) */}
-              <rect
-                x={spotlight.x}
-                y={spotlight.y}
-                width={spotlight.width}
-                height={spotlight.height}
-                rx={spotlight.radius}
-                ry={spotlight.radius}
-                fill="black"
-              />
-            </mask>
-          </defs>
-        </svg>
-      )}
-
-      {/* Dimmed & Blurred Backdrop: Applies blur to everything outside the spotlight cutout */}
-      {spotlight && (
-        <div
-          aria-hidden="true"
-          className="pointer-events-none fixed inset-0 z-[139]"
-          style={{
-            backgroundColor: "rgba(22, 17, 13, 0.48)",
-            backdropFilter: "blur(7px)",
-            WebkitBackdropFilter: "blur(7px)",
-            mask: "url(#tristone-spotlight-mask)",
-            WebkitMask: "url(#tristone-spotlight-mask)",
-          }}
-        />
+      {/* Dimmed & blurred backdrop panels surrounding the spotlight cutout */}
+      {spotlight && typeof window !== "undefined" && (
+        <div aria-hidden="true" className="pointer-events-none fixed inset-0 z-[139]">
+          {/* Top */}
+          <div style={panelStyle({ top: 0, left: 0, width: window.innerWidth, height: spotlight.y })} />
+          {/* Bottom */}
+          <div
+            style={panelStyle({
+              top: spotlight.y + spotlight.height,
+              left: 0,
+              width: window.innerWidth,
+              height: window.innerHeight - (spotlight.y + spotlight.height),
+            })}
+          />
+          {/* Left */}
+          <div
+            style={panelStyle({ top: spotlight.y, left: 0, width: spotlight.x, height: spotlight.height })}
+          />
+          {/* Right */}
+          <div
+            style={panelStyle({
+              top: spotlight.y,
+              left: spotlight.x + spotlight.width,
+              width: window.innerWidth - (spotlight.x + spotlight.width),
+              height: spotlight.height,
+            })}
+          />
+        </div>
       )}
 
       {/* Glowing Focus Frame & Live Badge: Exactly matching the cutout bounds */}
