@@ -3,58 +3,80 @@
 import { useEffect, useRef, useState } from "react";
 
 const STORAGE_KEY = "tristone-tour-done";
-const AUTO_ADVANCE_MS = 7000;
+const AUTO_ADVANCE_MS = 6000;
 
 const steps = [
   {
     id: "top",
-    title: "Welcome home",
-    text: "This is Tristone Construction — real homes, built across Bacolod and Iloilo, not stock photos.",
+    tag: "Hero & Flagship Builds",
+    title: "Project Slide Showcase",
+    text: "Swipe between featured homes or tap to call our engineering team directly.",
+  },
+  {
+    id: "about",
+    tag: "The Firm & Process",
+    title: "About Tristone & How We Build",
+    text: "Meet our licensed civil engineers and review our 5-step build process from soil to keys.",
   },
   {
     id: "clients",
-    title: "Trusted from abroad",
-    text: "Families overseas trust us to build their dream home back home, even from thousands of miles away.",
+    tag: "Diaspora Living",
+    title: "Overseas Family Builds",
+    text: "Explore real lot and floor area specifications built for families living abroad.",
   },
   {
     id: "rising",
-    title: "Homes rising right now",
-    text: "These builds are in progress today. Scroll through them, or click any one for the full layout, finishes, and freebies.",
+    tag: "Active Commission",
+    title: "Interactive Project Showcase",
+    text: "Tap any project card to inspect 3D walkarounds, room dimensions, and upgrades.",
   },
   {
     id: "projects",
-    title: "Completed & ongoing builds",
-    text: "A look at homes we've already turned over, and the ones still underway.",
+    tag: "Works Portfolio",
+    title: "Filterable Build Gallery",
+    text: "Filter between completed turnovers, ongoing construction, and groundbreakings.",
   },
   {
     id: "y2025",
-    title: "2025 lineup",
-    text: "Here's what we're breaking ground on this year.",
+    tag: "Pipeline",
+    title: "2025 Lineup",
+    text: "Preview newly scheduled residential builds breaking ground this year across Western Visayas.",
   },
   {
     id: "videos",
-    title: "See it in motion",
-    text: "Site updates and turnovers, straight from the build. Every clip plays on its own as you scroll.",
+    tag: "On-Site Motion",
+    title: "Site Walkthrough Videos",
+    text: "Watch vertical on-site progress clips, structural concrete pours, and ribbon ceremonies.",
   },
   {
     id: "financing",
-    title: "Build now, pay later",
-    text: "We offer financing and freebies worth thousands on every qualifying project.",
+    tag: "Budget & Loans",
+    title: "Build Now, Pay Later",
+    text: "Check PAG-IBIG Fund assistance, commercial bank loan support, and included freebies.",
   },
   {
     id: "testimonials",
-    title: "Families we've built for",
-    text: "Real words from the people who trusted us with their dream home.",
+    tag: "Client Trust",
+    title: "Homeowner Reviews",
+    text: "Read authentic turnover feedback from verified clients and families.",
   },
   {
     id: "careers",
-    title: "We're hiring",
-    text: "Looking to join a growing construction team? We'd love to hear from you.",
+    tag: "Join Our Team",
+    title: "Careers at Tristone",
+    text: "Explore openings for draftsmen, site engineers, and architectural staff.",
   },
   {
     id: "contact",
-    title: "Let's get started",
-    text: "Ready to build? This is where you reach us — call, message, or visit.",
+    tag: "Direct Line",
+    title: "Schedule a Consultation",
+    text: "Book a site inspection, message on WhatsApp, or visit our Bacolod office.",
+  },
+  {
+    id: "concierge-fab",
+    tag: "24/7 Support",
+    title: "Tristone Concierge",
+    text: "Tap this button anytime to ask questions about financing, permits, or our building process.",
   },
 ];
 
@@ -63,17 +85,18 @@ export default function OnboardingTour() {
   const [name, setName] = useState("");
   const [stepIndex, setStepIndex] = useState(0);
   const [progress, setProgress] = useState(0);
+  const [isPaused, setIsPaused] = useState(false);
   const highlightedRef = useRef<HTMLElement | null>(null);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   useEffect(() => {
     try {
       if (!localStorage.getItem(STORAGE_KEY)) {
-        const id = setTimeout(() => setStage("ask"), 1200);
+        const id = setTimeout(() => setStage("ask"), 1400);
         return () => clearTimeout(id);
       }
     } catch {
-      // localStorage unavailable; skip the tour silently
+      // localStorage unavailable; skip tour
     }
   }, []);
 
@@ -92,6 +115,7 @@ export default function OnboardingTour() {
       el.scrollIntoView({ behavior: "smooth", block: "center" });
     }
     setStepIndex(idx);
+    setProgress(0);
   };
 
   const endTour = () => {
@@ -109,14 +133,33 @@ export default function OnboardingTour() {
     goToStep(0);
   };
 
-  // Auto-advance with a visible progress bar, pausable by interacting.
+  // Keyboard navigation
   useEffect(() => {
     if (stage !== "touring") return;
+    const handleKey = (e: KeyboardEvent) => {
+      if (e.key === "ArrowRight") {
+        if (stepIndex < steps.length - 1) goToStep(stepIndex + 1);
+        else endTour();
+      } else if (e.key === "ArrowLeft") {
+        if (stepIndex > 0) goToStep(stepIndex - 1);
+      } else if (e.key === "Escape") {
+        endTour();
+      }
+    };
+    window.addEventListener("keydown", handleKey);
+    return () => window.removeEventListener("keydown", handleKey);
+  }, [stage, stepIndex]);
+
+  // Auto-advance with progress bar (pauses on hover/touch)
+  useEffect(() => {
+    if (stage !== "touring" || isPaused) return;
     setProgress(0);
     const start = Date.now();
     if (timerRef.current) clearInterval(timerRef.current);
+
     timerRef.current = setInterval(() => {
-      const pct = Math.min(100, ((Date.now() - start) / AUTO_ADVANCE_MS) * 100);
+      const elapsed = Date.now() - start;
+      const pct = Math.min(100, (elapsed / AUTO_ADVANCE_MS) * 100);
       setProgress(pct);
       if (pct >= 100) {
         if (stepIndex < steps.length - 1) {
@@ -126,111 +169,143 @@ export default function OnboardingTour() {
         }
       }
     }, 100);
+
     return () => {
       if (timerRef.current) clearInterval(timerRef.current);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [stage, stepIndex]);
+  }, [stage, stepIndex, isPaused]);
 
   useEffect(() => clearHighlight, []);
 
   if (stage === "hidden") return null;
 
+  // Lightweight initial prompt: compact, non-intrusive on mobile
   if (stage === "ask") {
     return (
-      <div className="fixed inset-0 z-[200] flex items-center justify-center bg-iron/80 p-4 backdrop-blur-sm">
-        <div className="w-full max-w-sm bg-capiz p-8 text-center shadow-[0_40px_80px_-20px_rgba(0,0,0,0.5)]">
-          <p className="text-xs font-semibold uppercase tracking-[0.25em] text-ember-dim">
-            New here?
+      <div className="fixed inset-x-4 bottom-4 z-[200] sm:bottom-6 sm:right-6 sm:left-auto sm:max-w-sm">
+        <div className="rounded-2xl border border-ember-dim/30 bg-iron p-5 text-capiz shadow-[0_20px_40px_-15px_rgba(0,0,0,0.6)] backdrop-blur-md">
+          <div className="flex items-center justify-between text-[10px] font-bold uppercase tracking-[0.2em] text-ember-light">
+            <span>Quick Walkthrough</span>
+            <button
+              type="button"
+              onClick={endTour}
+              className="text-capiz-dim/40 hover:text-capiz"
+              aria-label="Dismiss tour"
+            >
+              &times;
+            </button>
+          </div>
+
+          <h3 className="mt-2 font-display text-base font-bold text-capiz">
+            Take a 1-minute site tour?
+          </h3>
+          <p className="mt-1 text-xs text-capiz-dim/75 leading-relaxed">
+            We&apos;ll walk you through our tools, active builds, 3D plans, and financing.
           </p>
-          <h2 className="mt-2 font-display text-2xl font-extrabold text-iron">
-            Let us show you around
-          </h2>
-          <p className="mt-2 text-sm text-iron/70">
-            Tell us your name and we&apos;ll walk you through the site.
-          </p>
+
           <form
             onSubmit={(e) => {
               e.preventDefault();
               startTour();
             }}
-            className="mt-5 flex flex-col gap-3"
+            className="mt-3.5 flex flex-col gap-2"
           >
             <input
               value={name}
               onChange={(e) => setName(e.target.value)}
-              placeholder="Your first name"
-              className="w-full border border-iron/20 bg-white px-4 py-2.5 text-sm text-iron outline-none focus:border-ember"
-              autoFocus
+              placeholder="First name (optional)"
+              className="w-full rounded-lg border border-capiz/15 bg-capiz/5 px-3 py-1.5 text-xs text-capiz placeholder-capiz-dim/40 outline-none focus:border-ember"
             />
-            <button
-              type="submit"
-              className="cursor-pointer bg-ember px-4 py-2.5 font-display text-sm font-bold text-white transition-colors hover:bg-ember-light"
-            >
-              Take the tour
-            </button>
-            <button
-              type="button"
-              onClick={endTour}
-              className="cursor-pointer text-xs font-medium text-iron/50 hover:text-iron"
-            >
-              No thanks, I&apos;ll explore on my own
-            </button>
+            <div className="flex items-center gap-2 pt-1">
+              <button
+                type="submit"
+                className="flex-1 rounded-lg bg-ember py-2 text-center font-display text-xs font-bold text-white transition-colors hover:bg-ember-light"
+              >
+                Start Tour
+              </button>
+              <button
+                type="button"
+                onClick={endTour}
+                className="rounded-lg border border-capiz/15 px-3 py-2 text-xs font-medium text-capiz-dim/70 hover:text-capiz"
+              >
+                Skip
+              </button>
+            </div>
           </form>
         </div>
       </div>
     );
   }
 
+  // Active step card: streamlined, compact, non-flooding for mobile viewports
   const step = steps[stepIndex];
   const greeting = name.trim() ? `${name.trim()}, ` : "";
 
   return (
-    <div className="pointer-events-none fixed inset-x-0 bottom-0 z-[200] flex justify-center p-4 sm:p-6">
-      <div className="pointer-events-auto w-full max-w-md bg-iron text-capiz shadow-[0_30px_60px_-20px_rgba(0,0,0,0.6)]">
-        <div className="h-[3px] w-full bg-capiz/10">
+    <div
+      className="pointer-events-none fixed inset-x-4 bottom-4 z-[200] flex justify-center sm:bottom-6 sm:inset-x-auto sm:right-6 sm:w-full sm:max-w-md"
+      onMouseEnter={() => setIsPaused(true)}
+      onMouseLeave={() => setIsPaused(false)}
+      onTouchStart={() => setIsPaused(true)}
+      onTouchEnd={() => setIsPaused(false)}
+    >
+      <div className="pointer-events-auto w-full rounded-2xl border border-ember-dim/30 bg-iron text-capiz shadow-[0_25px_50px_-15px_rgba(0,0,0,0.7)] overflow-hidden">
+        {/* Progress bar */}
+        <div className="h-[2px] w-full bg-capiz/10">
           <div
             className="h-full bg-ember transition-[width] duration-100 ease-linear"
             style={{ width: `${progress}%` }}
           />
         </div>
-        <div className="p-5 sm:p-6">
-          <div className="flex items-center justify-between text-xs font-semibold uppercase tracking-[0.2em] text-ember-light">
-            <span>
-              Step {stepIndex + 1} / {steps.length}
-            </span>
-            <button
-              type="button"
-              onClick={endTour}
-              className="cursor-pointer text-capiz-dim/50 hover:text-capiz"
-              aria-label="Skip tour"
-            >
-              Skip tour
-            </button>
+
+        <div className="p-4 sm:p-5">
+          {/* Header row: feature tag + step count + close */}
+          <div className="flex items-center justify-between text-[10px] font-semibold uppercase tracking-[0.2em] text-ember-light">
+            <span className="truncate max-w-[200px]">{step.tag}</span>
+            <div className="flex items-center gap-2.5 shrink-0">
+              <span className="font-mono text-capiz-dim/60">
+                {stepIndex + 1} / {steps.length}
+              </span>
+              <button
+                type="button"
+                onClick={endTour}
+                className="text-capiz-dim/40 hover:text-capiz text-sm leading-none"
+                aria-label="Exit tour"
+              >
+                &times;
+              </button>
+            </div>
           </div>
-          <h3 className="mt-2 font-display text-xl font-bold">{step.title}</h3>
-          <p className="mt-1.5 text-sm leading-relaxed text-capiz-dim/80">
+
+          {/* Title & Concise text */}
+          <h4 className="mt-1.5 font-display text-sm sm:text-base font-bold text-capiz">
+            {step.title}
+          </h4>
+          <p className="mt-1 text-xs leading-relaxed text-capiz-dim/80">
             {greeting}
             {step.text}
           </p>
 
-          <div className="mt-4 flex items-center justify-between">
+          {/* Controls */}
+          <div className="mt-3.5 flex items-center justify-between pt-2.5 border-t border-capiz/10">
             <button
               type="button"
               onClick={() => goToStep(Math.max(0, stepIndex - 1))}
               disabled={stepIndex === 0}
-              className="cursor-pointer text-sm font-medium text-capiz-dim/70 hover:text-capiz disabled:cursor-not-allowed disabled:opacity-30"
+              className="text-xs font-medium text-capiz-dim/60 hover:text-capiz disabled:opacity-25 disabled:cursor-not-allowed"
             >
-              Back
+              &larr; Back
             </button>
+
             <button
               type="button"
               onClick={() =>
                 stepIndex < steps.length - 1 ? goToStep(stepIndex + 1) : endTour()
               }
-              className="cursor-pointer bg-ember px-5 py-2 font-display text-sm font-bold text-white transition-colors hover:bg-ember-light"
+              className="rounded-lg bg-ember px-4 py-1.5 font-display text-xs font-bold text-white transition-colors hover:bg-ember-light"
             >
-              {stepIndex < steps.length - 1 ? "Next" : "Finish"}
+              {stepIndex < steps.length - 1 ? "Next \u2192" : "Finish"}
             </button>
           </div>
         </div>
@@ -240,8 +315,9 @@ export default function OnboardingTour() {
         .tour-highlight {
           position: relative;
           z-index: 150;
-          outline: 3px solid var(--ember);
-          outline-offset: -3px;
+          outline: 2px solid var(--ember);
+          outline-offset: 4px;
+          border-radius: 8px;
           animation: tour-pulse 1.6s ease-in-out infinite;
         }
         @keyframes tour-pulse {

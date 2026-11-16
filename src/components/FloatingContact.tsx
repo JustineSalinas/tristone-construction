@@ -277,6 +277,7 @@ export default function FloatingContact() {
       {/* Launcher: label pill + dark circle avatar, visible by default, crossfades to the close button when opened */}
       <div className="fixed bottom-5 right-4 z-50 sm:right-6">
         <div
+          id="concierge-fab"
           className="flex items-center gap-3"
           style={{
             opacity: chatOpen ? 0 : 1,
