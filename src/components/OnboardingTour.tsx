@@ -6,16 +6,12 @@ const USER_NAME_KEY = "tristone-user-name";
 // Relaxed 12-second pace so visitors can comfortably read and inspect each highlighted section
 const AUTO_ADVANCE_MS = 12000;
 
-interface TargetRect {
-  top: number;
-  left: number;
+interface SpotlightBox {
+  x: number;
+  y: number;
   width: number;
   height: number;
   radius: number;
-  frameTop: number;
-  frameLeft: number;
-  frameWidth: number;
-  frameHeight: number;
 }
 
 const steps = [
@@ -100,19 +96,17 @@ export default function OnboardingTour() {
   const [progress, setProgress] = useState(0);
   const [isHoverPaused, setIsHoverPaused] = useState(false);
   const [isUserPaused, setIsUserPaused] = useState(false);
-  const [spotlightRect, setSpotlightRect] = useState<TargetRect | null>(null);
-  const [isTransitioning, setIsTransitioning] = useState(false);
+  const [spotlight, setSpotlight] = useState<SpotlightBox | null>(null);
 
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const trackingRafRef = useRef<number | null>(null);
-  const scrollTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const isPaused = isHoverPaused || isUserPaused;
 
-  // Calculates bounding box for the current target element
-  const updateSpotlightRect = useCallback(() => {
+  // Calculates bounding box with 100% pixel-perfect alignment between cutout and focus frame
+  const updateSpotlight = useCallback(() => {
     if (stage !== "touring") {
-      setSpotlightRect(null);
+      setSpotlight(null);
       return;
     }
     const currentStep = steps[stepIndex];
@@ -123,83 +117,70 @@ export default function OnboardingTour() {
     const r = el.getBoundingClientRect();
     const vw = typeof window !== "undefined" ? window.innerWidth : 1200;
     const vh = typeof window !== "undefined" ? window.innerHeight : 800;
+    const isMobile = vw < 768;
     const isFab = currentStep.id === "concierge-fab";
     const isTop = currentStep.id === "top";
 
     if (isFab) {
-      const top = Math.round(r.top - 6);
-      const left = Math.round(r.left - 6);
-      const width = Math.round(r.width + 12);
-      const height = Math.round(r.height + 12);
-      setSpotlightRect({
-        top,
-        left,
-        width,
-        height,
+      setSpotlight({
+        x: Math.round(r.left - 6),
+        y: Math.round(r.top - 6),
+        width: Math.round(r.width + 12),
+        height: Math.round(r.height + 12),
         radius: 9999,
-        frameTop: top,
-        frameLeft: left,
-        frameWidth: width,
-        frameHeight: height,
       });
-    } else if (isTop) {
-      const navbarHeight = 70;
+      return;
+    }
+
+    if (isTop) {
+      // Hero section: starts cleanly below navbar (72px)
+      const navbarHeight = 72;
       const top = navbarHeight;
-      const height = Math.max(100, Math.min(vh - navbarHeight - 12, Math.round(r.height)));
-      const padX = vw >= 768 ? 12 : 6;
-      const left = padX;
+      // Leave room for mobile tour card (bottom-4) or desktop bottom margin
+      const maxBottom = isMobile ? vh - 145 : vh - 20;
+      const height = Math.max(100, Math.min(maxBottom, Math.round(r.bottom)) - top);
+      const padX = isMobile ? 8 : 16;
+      const x = padX;
       const width = vw - padX * 2;
-      setSpotlightRect({
-        top,
-        left,
+
+      setSpotlight({
+        x,
+        y: top,
         width,
         height,
-        radius: 18,
-        frameTop: top,
-        frameLeft: left,
-        frameWidth: width,
-        frameHeight: height,
+        radius: isMobile ? 16 : 20,
       });
-    } else {
-      const navbarHeight = 74;
-      const isFullWidth = r.width >= vw - 32;
-      const padX = isFullWidth ? (vw >= 768 ? 12 : 6) : 10;
-      const padY = 8;
-      const left = isFullWidth ? (vw >= 768 ? 12 : 6) : Math.max(6, Math.round(r.left - padX));
-      const width = isFullWidth
-        ? vw - (vw >= 768 ? 24 : 12)
-        : Math.min(vw - left - 6, Math.round(r.width + padX * 2));
-
-      const rawTop = Math.round(r.top - padY);
-      const rawHeight = Math.round(r.height + padY * 2);
-
-      // Clamp frame bounds to the visible viewport so frame and live badge are always in view
-      const frameTop = Math.max(navbarHeight, Math.min(vh - 140, rawTop));
-      const frameBottom = Math.min(vh - 14, rawTop + rawHeight);
-      const frameHeight = Math.max(90, frameBottom - frameTop);
-
-      setSpotlightRect({
-        top: rawTop,
-        left,
-        width,
-        height: rawHeight,
-        radius: 20,
-        frameTop,
-        frameLeft: left,
-        frameWidth: width,
-        frameHeight,
-      });
+      return;
     }
+
+    // Standard sections: clamp top below navbar (74px) and bottom above the tour card on mobile
+    const navbarHeight = 74;
+    const top = Math.max(navbarHeight, Math.round(r.top));
+    const maxBottom = isMobile ? vh - 145 : vh - 20;
+    const bottom = Math.min(maxBottom, Math.round(r.bottom));
+    const height = Math.max(90, bottom - top);
+
+    const padX = isMobile ? 8 : 16;
+    const x = padX;
+    const width = vw - padX * 2;
+
+    setSpotlight({
+      x,
+      y: top,
+      width,
+      height,
+      radius: isMobile ? 16 : 20,
+    });
   }, [stage, stepIndex]);
 
-  // Track scrolling and resizing to keep spotlight locked to target
+  // Track scrolling and resizing passively so spotlight stays locked 1:1
   useEffect(() => {
     if (stage !== "touring") return;
 
-    updateSpotlightRect();
+    updateSpotlight();
 
     const onScrollOrResize = () => {
-      updateSpotlightRect();
+      updateSpotlight();
     };
 
     window.addEventListener("scroll", onScrollOrResize, { passive: true });
@@ -209,9 +190,9 @@ export default function OnboardingTour() {
       window.removeEventListener("scroll", onScrollOrResize);
       window.removeEventListener("resize", onScrollOrResize);
     };
-  }, [stage, stepIndex, updateSpotlightRect]);
+  }, [stage, stepIndex, updateSpotlight]);
 
-  // Trigger prompt by default on every page load or refresh
+  // Trigger prompt by default on every page load or refresh after 1 second
   useEffect(() => {
     try {
       const savedName = localStorage.getItem(USER_NAME_KEY);
@@ -238,48 +219,40 @@ export default function OnboardingTour() {
   }, []);
 
   const goToStep = (idx: number) => {
-    if (scrollTimeoutRef.current) clearTimeout(scrollTimeoutRef.current);
     if (trackingRafRef.current) cancelAnimationFrame(trackingRafRef.current);
 
     const nextStep = steps[idx];
     const el = document.getElementById(nextStep.id);
 
-    // 1. Start transition: fade out frame to eliminate jarring jumps
-    setIsTransitioning(true);
     setStepIndex(idx);
     setProgress(0);
 
     if (el && nextStep.id !== "concierge-fab") {
-      // 2. Smoothly scroll target into center
-      el.scrollIntoView({ behavior: "smooth", block: "center" });
+      // Scroll accurately to the section, accounting for 74px sticky navbar
+      const targetY = Math.max(0, el.offsetTop - 74);
+      window.scrollTo({ top: targetY, behavior: "smooth" });
 
-      // 3. Track spotlight hole during the smooth scroll glide
+      // Live 60fps tracking loop during smooth scroll: zero latency, zero late popping
       const start = performance.now();
       const trackLoop = (now: number) => {
-        updateSpotlightRect();
-        if (now - start < 500) {
+        updateSpotlight();
+        if (now - start < 550) {
           trackingRafRef.current = requestAnimationFrame(trackLoop);
+        } else {
+          // Settle final position accurately
+          updateSpotlight();
         }
       };
       trackingRafRef.current = requestAnimationFrame(trackLoop);
-
-      // 4. Once scroll settles (520ms), update exact coordinates and illuminate frame & live badge
-      scrollTimeoutRef.current = setTimeout(() => {
-        updateSpotlightRect();
-        setIsTransitioning(false);
-      }, 520);
     } else {
-      updateSpotlightRect();
-      setIsTransitioning(false);
+      updateSpotlight();
     }
   };
 
   const endTour = () => {
     if (trackingRafRef.current) cancelAnimationFrame(trackingRafRef.current);
-    if (scrollTimeoutRef.current) clearTimeout(scrollTimeoutRef.current);
     setIsUserPaused(false);
-    setIsTransitioning(false);
-    setSpotlightRect(null);
+    setSpotlight(null);
     setStage("hidden");
   };
 
@@ -318,7 +291,7 @@ export default function OnboardingTour() {
 
   // Relaxed auto-advance with progress bar (resumes smoothly from current progress)
   useEffect(() => {
-    if (stage !== "touring" || isPaused || isTransitioning) return;
+    if (stage !== "touring" || isPaused) return;
 
     const start = Date.now() - (progress / 100) * AUTO_ADVANCE_MS;
     if (timerRef.current) clearInterval(timerRef.current);
@@ -340,7 +313,7 @@ export default function OnboardingTour() {
       if (timerRef.current) clearInterval(timerRef.current);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [stage, stepIndex, isPaused, isTransitioning]);
+  }, [stage, stepIndex, isPaused]);
 
   if (stage === "hidden") return null;
 
@@ -348,7 +321,7 @@ export default function OnboardingTour() {
   if (stage === "ask") {
     return (
       <div
-        className="fixed inset-0 z-[200] flex items-center justify-center p-4 sm:p-6 bg-black/50 backdrop-blur-md animate-tour-fade"
+        className="fixed inset-0 z-[200] flex items-center justify-center p-4 sm:p-6 bg-black/55 backdrop-blur-md animate-tour-fade"
         onClick={endTour}
       >
         <div
@@ -428,8 +401,8 @@ export default function OnboardingTour() {
 
   return (
     <>
-      {/* SVG Mask Definition: Clear Cutout for the Highlighted Target */}
-      {spotlightRect && (
+      {/* SVG Mask Definition: 100% Matching Clear Cutout */}
+      {spotlight && (
         <svg
           aria-hidden="true"
           className="pointer-events-none fixed inset-0 z-[138] h-full w-full"
@@ -441,13 +414,12 @@ export default function OnboardingTour() {
               <rect x="0" y="0" width="100%" height="100%" fill="white" />
               {/* Black cutout: transparent (100% crystal clear & unblurred) */}
               <rect
-                id="spotlight-hole"
-                x={spotlightRect.left}
-                y={spotlightRect.top}
-                width={spotlightRect.width}
-                height={spotlightRect.height}
-                rx={spotlightRect.radius}
-                ry={spotlightRect.radius}
+                x={spotlight.x}
+                y={spotlight.y}
+                width={spotlight.width}
+                height={spotlight.height}
+                rx={spotlight.radius}
+                ry={spotlight.radius}
                 fill="black"
               />
             </mask>
@@ -456,12 +428,12 @@ export default function OnboardingTour() {
       )}
 
       {/* Dimmed & Blurred Backdrop: Applies blur to everything outside the spotlight cutout */}
-      {spotlightRect && (
+      {spotlight && (
         <div
           aria-hidden="true"
-          className="pointer-events-none fixed inset-0 z-[139] transition-opacity duration-300"
+          className="pointer-events-none fixed inset-0 z-[139]"
           style={{
-            backgroundColor: "rgba(24, 19, 15, 0.48)",
+            backgroundColor: "rgba(22, 17, 13, 0.48)",
             backdropFilter: "blur(7px)",
             WebkitBackdropFilter: "blur(7px)",
             mask: "url(#tristone-spotlight-mask)",
@@ -470,19 +442,17 @@ export default function OnboardingTour() {
         />
       )}
 
-      {/* Glowing Architectural Frame & Live Badge Around Visible Portion */}
-      {spotlightRect && (
+      {/* Glowing Focus Frame & Live Badge: Exactly matching the cutout bounds */}
+      {spotlight && (
         <div
           aria-hidden="true"
-          className={`pointer-events-none fixed z-[145] transition-opacity duration-300 ease-out ${
-            isTransitioning ? "opacity-0" : "opacity-100"
-          }`}
+          className="pointer-events-none fixed z-[145]"
           style={{
-            top: `${spotlightRect.frameTop}px`,
-            left: `${spotlightRect.frameLeft}px`,
-            width: `${spotlightRect.frameWidth}px`,
-            height: `${spotlightRect.frameHeight}px`,
-            borderRadius: `${spotlightRect.radius}px`,
+            top: `${spotlight.y}px`,
+            left: `${spotlight.x}px`,
+            width: `${spotlight.width}px`,
+            height: `${spotlight.height}px`,
+            borderRadius: `${spotlight.radius}px`,
             border: "2px solid #d9531f",
             boxShadow:
               "0 0 0 1px rgba(255, 255, 255, 0.4), 0 0 32px rgba(217, 83, 31, 0.35), inset 0 0 18px rgba(217, 83, 31, 0.08)",
@@ -501,7 +471,7 @@ export default function OnboardingTour() {
         className={`pointer-events-none fixed z-[200] flex justify-center transition-all duration-300 ${
           isFabStep
             ? "inset-x-4 bottom-24 sm:inset-x-auto sm:right-6 sm:bottom-28 sm:w-full sm:max-w-md"
-            : "inset-x-4 bottom-5 sm:inset-x-auto sm:right-6 sm:bottom-6 sm:w-full sm:max-w-md"
+            : "inset-x-4 bottom-4 sm:inset-x-auto sm:right-6 sm:bottom-6 sm:w-full sm:max-w-md"
         }`}
         onMouseEnter={() => setIsHoverPaused(true)}
         onMouseLeave={() => setIsHoverPaused(false)}
