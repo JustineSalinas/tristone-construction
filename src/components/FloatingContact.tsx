@@ -287,7 +287,7 @@ export default function FloatingContact() {
           <button
             type="button"
             onClick={() => setChatOpen(true)}
-            className="no-focus-ring flex h-14 cursor-pointer items-center gap-2.5 whitespace-nowrap rounded-full bg-gradient-to-br from-iron to-[#120d09] pl-5 pr-6 text-sm font-semibold text-capiz shadow-[0_10px_28px_-8px_rgba(0,0,0,0.45)] ring-1 ring-ember/25 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_14px_32px_-8px_rgba(0,0,0,0.5)] hover:ring-ember/50"
+            className="no-focus-ring hidden cursor-pointer items-center gap-2.5 whitespace-nowrap rounded-full bg-gradient-to-br from-iron to-[#120d09] pl-5 pr-6 text-sm font-semibold text-capiz shadow-[0_10px_28px_-8px_rgba(0,0,0,0.45)] ring-1 ring-ember/25 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_14px_32px_-8px_rgba(0,0,0,0.5)] hover:ring-ember/50 sm:flex sm:h-14"
           >
             <span className="relative flex h-2 w-2 shrink-0">
               <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-ember opacity-75" />

@@ -29,7 +29,7 @@ const columns = [
         <a href={`tel:${siteInfo.phone.replace(/-/g, "")}`} className="block hover:text-ember-light">
           {siteInfo.phone}
         </a>
-        <a href={`mailto:${siteInfo.email}`} className="mt-1 block hover:text-ember-light">
+        <a href={`mailto:${siteInfo.email}`} className="mt-1 block break-all hover:text-ember-light">
           {siteInfo.email}
         </a>
       </>

@@ -15,7 +15,7 @@ import OnboardingTour from "@/components/OnboardingTour";
 
 export default function Home() {
   return (
-    <div className="flex min-h-full flex-1 flex-col bg-molave">
+    <div className="flex min-h-full flex-1 flex-col bg-molave overflow-x-clip">
       <Navbar />
       <main className="flex-1">
         <Hero />

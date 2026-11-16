@@ -43,10 +43,10 @@ export default function Contact() {
               </a>
               <a
                 href={`mailto:${siteInfo.email}`}
-                className="flex items-center justify-between px-6 py-5 transition-colors hover:bg-ember/10"
+                className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 px-6 py-5 transition-colors hover:bg-ember/10"
               >
                 <span className="text-sm text-iron/60">Email</span>
-                <span className="font-display font-bold text-iron">
+                <span className="break-all font-display text-sm font-bold text-iron">
                   {siteInfo.email}
                 </span>
               </a>

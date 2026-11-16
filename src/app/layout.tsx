@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Besley, Albert_Sans } from "next/font/google";
 import "./globals.css";
 import ScrollProgress from "@/components/ScrollProgress";
@@ -16,6 +16,13 @@ const albertSans = Albert_Sans({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
 });
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 5,
+  themeColor: "#f7f3ec",
+};
 
 export const metadata: Metadata = {
   title: "Tristone Construction | Quality Beyond Promises",

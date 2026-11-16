@@ -119,7 +119,7 @@ export default function Navbar() {
           type="button"
           aria-label="Toggle menu"
           onClick={() => setOpen((v) => !v)}
-          className="flex h-9 w-9 flex-col items-center justify-center gap-1.5 md:hidden"
+          className="flex h-11 w-11 flex-col items-center justify-center gap-1.5 md:hidden"
         >
           <span className="h-0.5 w-6 bg-iron" />
           <span className="h-0.5 w-6 bg-iron" />

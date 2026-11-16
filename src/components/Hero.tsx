@@ -196,7 +196,7 @@ export default function Hero() {
                   type="button"
                   aria-label={`Show ${slide.title}`}
                   onClick={() => setActive(i)}
-                  className="group/bar flex h-4 w-10 cursor-pointer items-center"
+                  className="group/bar flex h-11 w-10 cursor-pointer items-center justify-center"
                 >
                   <span className="block h-0.5 w-full overflow-hidden bg-white/25 transition-[height] group-hover/bar:h-1">
                     <span

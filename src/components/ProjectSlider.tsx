@@ -47,16 +47,16 @@ export default function ProjectSlider({
             style={{ zIndex: i + 1 }}
           >
             {/* Text column */}
-            <div className="relative flex w-full min-h-0 flex-1 flex-col justify-center gap-8 overflow-y-auto p-6 pb-24 pt-[90px] sm:p-10 sm:pb-28 sm:pt-[96px] lg:w-1/2 lg:p-14 lg:pb-14 lg:pt-[70px]">
+            <div className="relative flex w-full min-h-0 flex-1 flex-col justify-center gap-4 overflow-y-auto p-5 pb-16 pt-20 sm:gap-6 sm:p-10 sm:pb-20 sm:pt-24 lg:w-1/2 lg:gap-8 lg:p-14 lg:pb-14 lg:pt-[70px]">
               <div
                 className={`flex items-center gap-4 transition-all duration-700 ease-out ${
                   revealed[i] ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0"
                 }`}
               >
-                <span className="font-display text-3xl font-medium text-ember-light sm:text-4xl">
+                <span className="font-display text-2xl font-medium text-ember-light sm:text-4xl">
                   {String(i + 1).padStart(2, "0")}
                 </span>
-                <span className="h-8 w-px bg-capiz/20" />
+                <span className="h-6 w-px bg-capiz/20 sm:h-8" />
                 <div className="text-xs font-semibold uppercase tracking-[0.2em] text-capiz-dim/60">
                   <div>of {n} builds</div>
                   {project.status && <div className="mt-0.5 text-ember-light/80">{project.status}</div>}
@@ -65,7 +65,7 @@ export default function ProjectSlider({
 
               <div className="max-w-xl">
                 <h3
-                  className={`font-display text-5xl font-medium uppercase leading-[0.95] text-capiz transition-all delay-100 duration-700 ease-out sm:text-7xl lg:text-8xl ${
+                  className={`font-display text-3xl font-medium uppercase leading-[0.95] text-capiz transition-all delay-100 duration-700 ease-out sm:text-6xl lg:text-7xl xl:text-8xl ${
                     revealed[i] ? "translate-y-0 opacity-100" : "translate-y-6 opacity-0"
                   }`}
                 >
@@ -74,16 +74,16 @@ export default function ProjectSlider({
 
                 {project.stats && (
                   <div
-                    className={`mt-5 flex flex-wrap gap-x-6 gap-y-1 transition-all delay-150 duration-700 ease-out ${
+                    className={`mt-3 flex flex-wrap gap-x-5 gap-y-1 transition-all delay-150 duration-700 ease-out sm:mt-5 sm:gap-x-6 ${
                       revealed[i] ? "translate-y-0 opacity-100" : "translate-y-6 opacity-0"
                     }`}
                   >
                     {project.stats.slice(0, 3).map((stat) => (
                       <div key={stat.label}>
-                        <span className="font-display text-base font-bold text-capiz sm:text-lg">
+                        <span className="font-display text-sm font-bold text-capiz sm:text-lg">
                           {stat.value}
                         </span>
-                        <span className="ml-1.5 text-xs uppercase tracking-wide text-capiz-dim/50">
+                        <span className="ml-1 text-[11px] uppercase tracking-wide text-capiz-dim/50 sm:ml-1.5 sm:text-xs">
                           {stat.label}
                         </span>
                       </div>
@@ -92,11 +92,12 @@ export default function ProjectSlider({
                 )}
 
                 <div
-                  className={`mt-8 flex flex-wrap items-end gap-5 transition-all delay-200 duration-700 ease-out ${
+                  className={`mt-5 flex flex-col gap-3.5 transition-all delay-200 duration-700 ease-out sm:mt-8 ${
                     revealed[i] ? "translate-y-0 opacity-100" : "translate-y-6 opacity-0"
                   }`}
                 >
-                  <div className="flex gap-2.5">
+                  {/* Thumbnail strip */}
+                  <div className="no-scrollbar flex max-w-full gap-2.5 overflow-x-auto pb-1">
                     {project.images.slice(0, 4).map((src, idx) => (
                       <button
                         key={src}
@@ -106,39 +107,44 @@ export default function ProjectSlider({
                           setModalStartAtVideo(false);
                           setModalIndex(i);
                         }}
-                        className="relative h-14 w-20 cursor-pointer overflow-hidden rounded-sm ring-1 ring-capiz/20 transition hover:ring-ember/70 sm:h-16 sm:w-24"
+                        className="relative h-12 w-16 shrink-0 cursor-pointer overflow-hidden rounded-sm ring-1 ring-capiz/20 transition hover:ring-ember/70 sm:h-16 sm:w-24"
                       >
                         <Image src={src} alt="" fill sizes="96px" className="object-cover" />
                       </button>
                     ))}
                   </div>
 
-                  {project.video && (
+                  {/* Actions row: Walk around it affordance + See all photos */}
+                  <div className="flex flex-wrap items-center gap-4">
+                    {project.video && (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setModalStartAtVideo(true);
+                          setModalIndex(i);
+                        }}
+                        className="group inline-flex cursor-pointer items-center gap-2.5 rounded-sm border border-ember/70 bg-iron/50 px-3.5 py-2 text-xs font-semibold tracking-wide text-capiz transition-all hover:border-ember hover:bg-ember/15"
+                      >
+                        <span className="flex h-5 w-5 items-center justify-center rounded-[2px] bg-ember text-iron transition-transform group-hover:scale-105">
+                          <svg viewBox="0 0 24 24" className="h-3 w-3 fill-current" aria-hidden="true">
+                            <path d="M8 5v14l11-7z" />
+                          </svg>
+                        </span>
+                        <span>Walk around it</span>
+                      </button>
+                    )}
+
                     <button
                       type="button"
                       onClick={() => {
-                        setModalStartAtVideo(true);
+                        setModalStartAtVideo(false);
                         setModalIndex(i);
                       }}
-                      className="flex cursor-pointer items-center gap-2 border border-ember/60 bg-ember/10 px-4 py-2.5 font-display text-sm font-bold text-capiz transition-colors hover:bg-ember/20"
+                      className="cursor-pointer whitespace-nowrap text-xs font-medium text-capiz underline decoration-capiz/40 underline-offset-4 hover:decoration-ember sm:text-sm"
                     >
-                      <svg viewBox="0 0 24 24" className="h-3.5 w-3.5 text-ember-light" fill="currentColor">
-                        <path d="M6 4l15 8-15 8z" />
-                      </svg>
-                      Watch video
+                      See all photos
                     </button>
-                  )}
-
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setModalStartAtVideo(false);
-                      setModalIndex(i);
-                    }}
-                    className="cursor-pointer whitespace-nowrap text-base font-medium text-capiz underline decoration-capiz/40 underline-offset-4 hover:decoration-ember"
-                  >
-                    See all photos
-                  </button>
+                  </div>
                 </div>
               </div>
 
