@@ -9,6 +9,15 @@ const croppedPhotos: Record<string, string> = {
   blessed: "/images/projects/blessed-photo.jpg",
 };
 
+// Extra real photos we have on hand for a project, beyond its single cover shot.
+const extraPhotos: Record<string, string[]> = {
+  gamboa: [
+    "/images/projects/gamboa-groundbreaking-group-a.jpg",
+    "/images/projects/gamboa-groundbreaking-group-b.jpg",
+    "/images/projects/gamboa-groundbreaking-details.jpg",
+  ],
+};
+
 const projects: ShowcaseProject[] = [
   ...featuredProjects.map((p) => ({
     slug: p.slug,
@@ -16,8 +25,9 @@ const projects: ShowcaseProject[] = [
     flag: p.flag,
     location: p.location,
     cover: croppedPhotos[p.slug] ?? p.image,
-    images: [croppedPhotos[p.slug] ?? p.image],
-    verse: p.note ? `${p.note} ${p.verse}` : p.verse,
+    images: [croppedPhotos[p.slug] ?? p.image, ...(extraPhotos[p.slug] ?? [])],
+    note: p.note,
+    verse: p.verse,
     status: "Rising",
     type: "Residential",
     stats: p.stats,
@@ -41,7 +51,7 @@ const projects: ShowcaseProject[] = [
 
 export default function FeaturedProjects() {
   return (
-    <section className="bg-molave py-20">
+    <section id="rising" className="bg-molave py-20">
       <div className="mx-auto max-w-6xl px-5 sm:px-8">
         <Reveal>
           <h2 className="max-w-2xl font-display text-3xl font-extrabold text-iron sm:text-4xl">

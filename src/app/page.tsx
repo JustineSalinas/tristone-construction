@@ -11,6 +11,7 @@ import HiringBanner from "@/components/HiringBanner";
 import Contact from "@/components/Contact";
 import Footer from "@/components/Footer";
 import FloatingContact from "@/components/FloatingContact";
+import OnboardingTour from "@/components/OnboardingTour";
 
 export default function Home() {
   return (
@@ -30,6 +31,7 @@ export default function Home() {
       </main>
       <Footer />
       <FloatingContact />
+      <OnboardingTour />
     </div>
   );
 }

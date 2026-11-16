@@ -6,6 +6,8 @@ export type ShowcaseProject = {
   cover: string;
   images: string[];
   description?: string;
+  /** A plain, non-quoted note shown above the verse, e.g. a thank-you line. */
+  note?: string;
   verse?: string;
   video?: string;
   /** Small category shown in the breadcrumb and facts grid, e.g. "Turnover", "Design". */

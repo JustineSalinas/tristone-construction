@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { siteInfo } from "@/lib/content";
-import { matchFaq } from "@/lib/chatbot";
+import { respond, type ChatState } from "@/lib/chatbot";
 import {
   MailIcon,
   PhoneIcon,
@@ -77,6 +77,7 @@ export default function FloatingContact() {
     },
   ]);
   const [input, setInput] = useState("");
+  const [chatState, setChatState] = useState<ChatState>({ pendingTopicId: null });
   const scrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -86,8 +87,9 @@ export default function FloatingContact() {
   const send = (text: string) => {
     const trimmed = text.trim();
     if (!trimmed) return;
-    const reply = matchFaq(trimmed);
+    const { text: reply, nextState } = respond(trimmed, chatState);
     setMessages((m) => [...m, { from: "user", text: trimmed }, { from: "bot", text: reply }]);
+    setChatState(nextState);
     setInput("");
   };
 

@@ -41,7 +41,11 @@ export default function ProjectGrid({
             </div>
             <div className="mt-4 flex items-baseline justify-between gap-2">
               <h3 className="font-display text-2xl font-bold text-iron">{project.name}</h3>
-              {project.flag && <span aria-hidden="true">{project.flag}</span>}
+              {project.flag && (
+                <span className="rounded-sm border border-iron/20 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-iron/50">
+                  {project.flag}
+                </span>
+              )}
             </div>
             {project.location && (
               <p className="mt-1 text-base text-iron/50">{project.location}</p>

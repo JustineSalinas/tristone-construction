@@ -72,7 +72,7 @@ export const featuredProjects = [
   {
     slug: "gamboa",
     name: "Project Gamboa",
-    flag: "🇦🇪",
+    flag: "AE",
     headline: "A New Home Is Set to Rise in the North",
     location: "St. Paul's Village, Talisay City, Negros Occidental",
     verse: "“He hath made every thing beautiful in his time.” (Ecclesiastes 3:11)",
@@ -113,7 +113,7 @@ export const featuredProjects = [
   {
     slug: "blessed",
     name: "Project Blessed",
-    flag: "🇦🇺",
+    flag: "AU",
     headline: "Now Rising in the South",
     location: "South Bay Subdivision Phase 3, Bago City",
     verse:
@@ -170,7 +170,7 @@ export const featuredProjects = [
 export const internationalClients = [
   {
     name: "Project Blessed",
-    flag: "🇦🇺",
+    flag: "AU",
     location: "South Bay Subd., Bago City",
     type: "Luxury Finish Residential",
     lotArea: "700 sqm",
@@ -179,7 +179,7 @@ export const internationalClients = [
   },
   {
     name: "Project Gamboa",
-    flag: "🇦🇪",
+    flag: "AE",
     location: "St. Paul's Village, Talisay City",
     type: "Semi-Elegant Residential",
     lotArea: "480 sqm",
@@ -188,7 +188,7 @@ export const internationalClients = [
   },
   {
     name: "Project Iceaz",
-    flag: "🇫🇷",
+    flag: "FR",
     location: "Villa Alexandra Subd., Bacolod City",
     type: "2-Unit Apartment",
     lotArea: "115 sqm",

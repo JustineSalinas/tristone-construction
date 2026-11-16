@@ -4,12 +4,18 @@ import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import type { ShowcaseProject } from "./project-types";
 
+const COLLAPSED_LIMIT = 4;
+
 function Tags({ title, items }: { title: string; items: string[] }) {
+  const [expanded, setExpanded] = useState(false);
+  const visible = expanded ? items : items.slice(0, COLLAPSED_LIMIT);
+  const hidden = items.length - visible.length;
+
   return (
-    <div className="mt-5">
+    <div className="mt-4">
       <h4 className="font-display text-sm font-bold text-iron">{title}</h4>
       <ul className="mt-2 flex flex-wrap gap-2">
-        {items.map((item) => (
+        {visible.map((item) => (
           <li
             key={item}
             className="cursor-default rounded-full border border-iron/15 px-2.5 py-1 text-xs text-iron/80 transition-all duration-200 ease-out hover:-translate-y-0.5 hover:border-ember/60 hover:text-iron hover:shadow-[0_6px_16px_-10px_rgba(0,0,0,0.3)]"
@@ -17,6 +23,24 @@ function Tags({ title, items }: { title: string; items: string[] }) {
             {item}
           </li>
         ))}
+        {hidden > 0 && (
+          <button
+            type="button"
+            onClick={() => setExpanded(true)}
+            className="cursor-pointer rounded-full border border-dashed border-iron/25 px-2.5 py-1 text-xs font-medium text-ember-dim transition-colors hover:border-ember hover:text-ember"
+          >
+            +{hidden} more
+          </button>
+        )}
+        {expanded && items.length > COLLAPSED_LIMIT && (
+          <button
+            type="button"
+            onClick={() => setExpanded(false)}
+            className="cursor-pointer rounded-full border border-dashed border-iron/25 px-2.5 py-1 text-xs font-medium text-iron/50 transition-colors hover:border-iron/50 hover:text-iron"
+          >
+            Show less
+          </button>
+        )}
       </ul>
     </div>
   );
@@ -25,18 +49,32 @@ function Tags({ title, items }: { title: string; items: string[] }) {
 export default function ProjectModal({
   project,
   sectionLabel,
+  startAtVideo,
   onClose,
 }: {
   project: ShowcaseProject | null;
   sectionLabel: string;
+  startAtVideo?: boolean;
   onClose: () => void;
 }) {
   const [imgIndex, setImgIndex] = useState(0);
   const thumbRefs = useRef<(HTMLButtonElement | null)[]>([]);
+  const videoRef = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
     setImgIndex(0);
   }, [project]);
+
+  useEffect(() => {
+    if (!project || !startAtVideo) return;
+    const id = setTimeout(() => {
+      const video = videoRef.current;
+      if (!video) return;
+      video.scrollIntoView({ behavior: "smooth", block: "center" });
+      video.play().catch(() => {});
+    }, 150);
+    return () => clearTimeout(id);
+  }, [project, startAtVideo]);
 
   useEffect(() => {
     thumbRefs.current[imgIndex]?.scrollIntoView({
@@ -71,13 +109,14 @@ export default function ProjectModal({
 
   return (
     <div
-      className="fixed inset-0 z-[100] flex items-start justify-center overflow-y-auto bg-iron/80 p-4 backdrop-blur-sm sm:items-center sm:p-6"
+      className="fixed inset-0 z-[100] flex items-center justify-center bg-iron/80 p-4 backdrop-blur-sm sm:p-6"
       onClick={onClose}
     >
       <div
-        className="relative w-full max-w-3xl rounded-sm bg-capiz shadow-[0_40px_80px_-20px_rgba(0,0,0,0.5)]"
+        className="relative max-h-[92vh] w-full max-w-4xl overflow-y-auto rounded-sm bg-capiz shadow-[0_40px_80px_-20px_rgba(0,0,0,0.5)]"
         onClick={(e) => e.stopPropagation()}
       >
+        <div className="sticky top-0 z-20 bg-capiz">
         <div className="flex items-start justify-between gap-4 px-6 pt-6 sm:px-8 sm:pt-8">
           <div>
             <p className="text-xs font-semibold uppercase tracking-[0.2em] text-ember-dim">
@@ -86,7 +125,11 @@ export default function ProjectModal({
             </p>
             <h3 className="mt-1 flex items-center gap-2 font-display text-2xl font-extrabold text-iron sm:text-3xl">
               {project.name}
-              {project.flag && <span aria-hidden="true">{project.flag}</span>}
+              {project.flag && (
+                <span className="rounded-sm border border-iron/20 px-1.5 py-0.5 align-middle text-[10px] font-bold uppercase tracking-wider text-iron/50">
+                  {project.flag}
+                </span>
+              )}
             </h3>
           </div>
           <button
@@ -98,7 +141,7 @@ export default function ProjectModal({
           </button>
         </div>
 
-        <div className="relative mt-5 aspect-[4/3] w-full bg-molave-raised sm:aspect-video">
+        <div className="relative mt-5 aspect-[4/3] w-full shrink-0 bg-molave-raised sm:aspect-video">
           <span className="absolute left-3 top-3 z-10 rounded-sm bg-capiz px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.15em] text-iron">
             Photo
           </span>
@@ -138,7 +181,7 @@ export default function ProjectModal({
         </div>
 
         {project.images.length > 1 && (
-          <div className="no-scrollbar flex gap-2 overflow-x-auto px-6 py-4 sm:px-8">
+          <div className="no-scrollbar flex shrink-0 gap-2 overflow-x-auto px-6 py-4 sm:px-8">
             {project.images.map((src, i) => (
               <button
                 key={src}
@@ -148,15 +191,16 @@ export default function ProjectModal({
                 type="button"
                 aria-label={`Show photo ${i + 1}`}
                 onClick={() => setImgIndex(i)}
-                className={`relative h-14 w-20 shrink-0 cursor-pointer overflow-hidden rounded-sm ring-2 transition ${
+                className={`relative h-16 w-24 shrink-0 cursor-pointer overflow-hidden rounded-sm ring-2 transition ${
                   i === imgIndex ? "ring-ember" : "ring-transparent opacity-70 hover:opacity-100"
                 }`}
               >
-                <Image src={src} alt="" fill sizes="80px" className="object-cover" />
+                <Image src={src} alt="" fill sizes="96px" className="object-cover" />
               </button>
             ))}
           </div>
         )}
+        </div>
 
         <div className="grid grid-cols-3 gap-4 border-y border-iron/15 px-6 py-5 sm:px-8">
           <div>
@@ -180,8 +224,13 @@ export default function ProjectModal({
         </div>
 
         <div className="px-6 py-6 sm:px-8">
+          {project.note && (
+            <p className="text-sm text-iron/70">{project.note}</p>
+          )}
           {project.verse && (
-            <p className="font-display text-base italic text-ember-dim">&ldquo;{project.verse}&rdquo;</p>
+            <p className="mt-2 font-display text-base italic text-ember-dim">
+              &ldquo;{project.verse.replace(/^[\s“"]+|[\s”"]+$/g, "")}&rdquo;
+            </p>
           )}
           {project.description && (
             <p className="mt-3 text-sm leading-relaxed text-iron/80">{project.description}</p>
@@ -207,6 +256,7 @@ export default function ProjectModal({
 
           {project.video && (
             <video
+              ref={videoRef}
               src={project.video}
               controls
               playsInline

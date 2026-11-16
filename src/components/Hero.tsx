@@ -112,13 +112,18 @@ export default function Hero() {
           aria-hidden="true"
           className="pointer-events-none absolute left-0 right-0 top-[3.5rem] select-none text-center sm:top-[4.5rem]"
         >
-          <p
-            className="font-display font-medium uppercase leading-[0.8] tracking-[-0.03em] text-iron"
-            style={{ fontSize: "clamp(3rem, 13vw, 9rem)" }}
-          >
-            Tristone
-          </p>
-          <p className="mt-5 font-display text-sm italic text-iron/70 sm:mt-6 sm:text-base">
+          <div className="leading-none">
+            <p
+              className="block font-display font-medium uppercase leading-[0.8] tracking-[-0.03em] text-iron"
+              style={{ fontSize: "clamp(3rem, 13vw, 9rem)" }}
+            >
+              Tristone
+            </p>
+            <p className="mt-4 block font-display text-lg font-semibold uppercase leading-none tracking-[0.4em] text-iron/60 sm:mt-5 sm:text-2xl">
+              Construction
+            </p>
+          </div>
+          <p className="mt-6 font-display text-sm italic text-iron/70 sm:mt-7 sm:text-base">
             Quality beyond promises.
           </p>
         </div>

@@ -27,7 +27,7 @@ const unphotographed = projects2025.filter((p) => !previewNames.includes(p.name)
 
 export default function Projects2025() {
   return (
-    <section className="bg-molave-deep py-20">
+    <section id="y2025" className="bg-molave-deep py-20">
       <div className="mx-auto max-w-6xl px-5 sm:px-8">
         <Reveal>
           <h2 className="max-w-2xl font-display text-3xl font-extrabold text-iron sm:text-4xl">

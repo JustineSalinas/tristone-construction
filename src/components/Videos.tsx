@@ -16,7 +16,7 @@ const videoFiles = [
 
 export default function Videos() {
   return (
-    <section className="bg-molave py-20">
+    <section id="videos" className="bg-molave py-20">
       <div className="mx-auto max-w-6xl px-5 sm:px-8">
         <Reveal className="flex flex-wrap items-end justify-between gap-6">
           <div>

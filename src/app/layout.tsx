@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Besley, Albert_Sans } from "next/font/google";
 import "./globals.css";
 import ScrollProgress from "@/components/ScrollProgress";
+import Preloader from "@/components/Preloader";
 
 const besley = Besley({
   variable: "--font-besley",
@@ -29,6 +30,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       className={`${besley.variable} ${albertSans.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-molave text-iron font-sans">
+        <Preloader />
         <ScrollProgress />
         {children}
       </body>

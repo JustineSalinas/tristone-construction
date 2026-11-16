@@ -78,7 +78,14 @@ export default function FooterWordmark() {
         TRISTONE
       </h2>
       <p
-        className={`mt-5 font-display text-sm italic text-capiz/75 transition-all duration-[1600ms] delay-200 ease-out sm:mt-6 sm:text-base ${
+        className={`mt-4 font-display text-lg font-semibold uppercase leading-none tracking-[0.4em] text-capiz/60 transition-all duration-[1600ms] delay-100 ease-out sm:mt-5 sm:text-2xl ${
+          lit ? "translate-y-0 opacity-100" : "translate-y-3 opacity-0"
+        }`}
+      >
+        Construction
+      </p>
+      <p
+        className={`mt-6 font-display text-sm italic text-capiz/75 transition-all duration-[1600ms] delay-200 ease-out sm:mt-7 sm:text-base ${
           lit ? "translate-y-0 opacity-100" : "translate-y-3 opacity-0"
         }`}
       >
