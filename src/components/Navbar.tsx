@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
+import logoMark from "../../public/brand/logo-mark.png";
 import { siteInfo } from "@/lib/content";
 
 const primaryLink = { href: "#top", label: "Home" };
@@ -64,7 +65,7 @@ export default function Navbar() {
       <div className="flex w-full items-center justify-between gap-8 px-5 py-3 sm:px-8 lg:px-12 xl:px-16">
         <a href="#top" className="flex items-center gap-2.5">
           <Image
-            src="/brand/logo-mark.png"
+            src={logoMark}
             alt=""
             width={36}
             height={36}

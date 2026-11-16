@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
+import logoMarkOnDark from "../../public/brand/logo-mark-on-dark.png";
 import { siteInfo } from "@/lib/content";
 import { respond, type ChatState } from "@/lib/chatbot";
 import {
@@ -168,7 +169,7 @@ export default function FloatingContact() {
           <div className="flex items-center gap-3">
             <div className="flex h-10 w-10 items-center justify-center rounded-full bg-iron ring-1 ring-ember-dim/40">
               <Image
-                src="/brand/logo-mark.png"
+                src={logoMarkOnDark}
                 alt=""
                 width={24}
                 height={24}
@@ -303,7 +304,7 @@ export default function FloatingContact() {
             className="no-focus-ring relative flex h-14 w-14 shrink-0 cursor-pointer items-center justify-center rounded-full bg-iron text-capiz shadow-[0_10px_24px_-8px_rgba(0,0,0,0.4)] ring-1 ring-ember-dim/30 transition-transform duration-200 hover:scale-[1.04]"
           >
             <Image
-              src="/brand/logo-mark.png"
+              src={logoMarkOnDark}
               alt=""
               width={22}
               height={22}

@@ -1,4 +1,5 @@
 import Image from "next/image";
+import logoMarkOnDark from "../../public/brand/logo-mark-on-dark.png";
 import { siteInfo } from "@/lib/content";
 import { FretworkDivider } from "./Fretwork";
 import { FacebookIcon } from "./icons";
@@ -121,7 +122,7 @@ export default function Footer() {
         <div className="mt-10 flex flex-col items-center justify-between gap-4 sm:flex-row">
           <div className="flex items-center gap-3">
             <Image
-              src="/brand/logo-mark.png"
+              src={logoMarkOnDark}
               alt=""
               width={32}
               height={32}
