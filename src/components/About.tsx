@@ -1,331 +1,197 @@
 import Image from "next/image";
-import { siteInfo } from "@/lib/content";
 import Reveal from "./Reveal";
-import { FretworkDivider } from "./Fretwork";
 
-const methodologies = [
+const protocols = [
   {
-    step: "01",
-    title: "Consultation & Lot Assessment",
-    duration: "Week 1 – 2",
-    summary:
-      "We begin on your soil. Our team conducts an on-site lot survey, analyzes elevation and sun orientation, discusses your family's lifestyle flow, and evaluates financing options — whether cash, bank loan, or accredited PAG-IBIG Fund financing.",
-    deliverables: [
-      "On-site lot & contour inspection",
-      "Lifestyle brief & space planning",
-      "Preliminary budget & financing evaluation",
-    ],
+    num: "01",
+    phase: "Discovery & Lot Assessment",
+    title: "Site Survey & Spatial Brief",
+    description:
+      "Every project begins on the terrain. We evaluate topography elevations, sun and wind vectors, and soil bearing capacity, aligning your family's living rituals with a disciplined budget and financing path.",
+    deliverable: "Soil analysis & spatial brief",
   },
   {
-    step: "02",
-    title: "3D Visualization & Architectural Blueprint",
-    duration: "Week 3 – 5",
-    summary:
-      "Before a single shovel touches the ground, your home is completely modeled in 3D. Walk through your living spaces, examine natural light angles, inspect kitchen workflows, and select custom finishes — from timber slats and travertine walls to quartzite counters.",
-    deliverables: [
-      "Full 3D exterior & interior architectural walkthroughs",
-      "Complete structural, electrical, and plumbing engineering plans",
-      "Detailed bill of materials and transparent milestone schedule",
-    ],
+    num: "02",
+    phase: "Architectural Prototyping",
+    title: "3D BIM & Virtual Walkthroughs",
+    description:
+      "Before breaking ground, the complete residence is modeled in 3D BIM. Homeowners explore open-to-below sightlines, cross-ventilation, kitchen workflows, and bespoke material palettes including timber slats, travertine, and quartzite.",
+    deliverable: "Complete 3D model & engineering blueprints",
   },
   {
-    step: "03",
-    title: "Permits, Bureaucracy & Regulatory Sign-Off",
-    duration: "Week 6 – 8",
-    summary:
-      "Zero stress with city hall. Tristone handles the entire regulatory gauntlet on your behalf: barangay clearances, municipal building permits, structural/sanitary engineering sign-offs, fire safety approvals, and utility connections.",
-    deliverables: [
-      "City hall building permit processing",
-      "Barangay & zoning clearances",
-      "Fire safety & municipal compliance sign-offs",
-    ],
+    num: "03",
+    phase: "Regulatory Compliance",
+    title: "Statutory Permitting & Clearances",
+    description:
+      "We manage the entire municipal approvals gauntlet. Tristone prepares, signs, and seals all structural, electrical, and sanitary engineering documents, securing building permits, barangay clearances, and fire safety compliance.",
+    deliverable: "City hall permits & utility approvals",
   },
   {
-    step: "04",
-    title: "Precision Engineering & Milestone Construction",
-    duration: "Groundbreaking to Finishes",
-    summary:
-      "Supervised directly by on-site licensed civil engineers. We enforce strict rebar spacing, concrete strength testing, anti-termite soil barriers, and tropical moisture-proofing. Clients — especially OFWs and overseas families — receive regular HD photo/video walkthroughs at every milestone.",
-    deliverables: [
-      "Daily supervision by licensed civil engineers",
-      "Strict compliance with the National Building Code of the Philippines",
-      "Regular HD photo & video updates for remote homeowners",
-    ],
+    num: "04",
+    phase: "Precision Construction",
+    title: "On-Site Civil Engineering & Milestones",
+    description:
+      "Direct daily supervision by licensed civil engineers. We enforce strict rebar spacing, certified concrete compression testing, anti-termite soil barriers, and tropical moisture-proofing, backed by regular HD video logs for local and overseas families.",
+    deliverable: "Weekly engineer logs & milestone accounting",
   },
   {
-    step: "05",
-    title: "Turnkey Turnover, Occupancy & Warranty",
-    duration: "Completion & Beyond",
-    summary:
-      "A formal handover ceremony marks the completion of your home. We complete thorough punch-list inspections, assist with complimentary occupancy permit processing, supply certified pest control, and back every build with our structural warranty.",
-    deliverables: [
-      "Official turnover ceremony & key handover",
-      "Complimentary occupancy permit processing assistance",
-      "Pest control treatment certification & structural warranty",
-    ],
+    num: "05",
+    phase: "Handover & Stewardship",
+    title: "Turnkey Turnover & Structural Warranty",
+    description:
+      "A thorough punch-list inspection precedes our ceremonial ribbon handover. We process your Certificate of Occupancy, certify full pest control treatment, and support your home with our long-term structural warranty.",
+    deliverable: "Occupancy certificate & structural warranty",
   },
 ];
 
-const pillars = [
+const hallmarks = [
   {
-    number: "01",
-    title: "Licensed Engineering Leadership",
-    description:
-      "Led on the ground by licensed Civil Engineer Judy Ann Parreñas Ardeña and our dedicated engineering team. We never outsource supervision or compromise structural calculations.",
+    title: "Licensed Civil Engineering",
+    detail:
+      "Direct personal oversight by Engr. Judy Ann Parreñas Ardeña. No proxy supervisors or compromised structural calculations.",
   },
   {
-    number: "02",
-    title: "Virtual Walkthroughs Before Building",
-    description:
-      "Every Tristone home is fully modeled in 3D prior to groundbreaking. You see room heights, kitchen flows, and material finishes in photorealistic detail before construction begins.",
+    title: "Diaspora & OFW Transparency",
+    detail:
+      "Tailored for families in Canada, the US, and abroad with scheduled video inspections, WhatsApp engineer lines, and milestone billing.",
   },
   {
-    number: "03",
-    title: "PAG-IBIG & Bank Loan Packaging",
-    description:
-      "We bridge the gap between dream and affordability. Full documentation assistance for PAG-IBIG Fund financing and major commercial bank loans (BDO, BPI, Metrobank).",
-  },
-  {
-    number: "04",
-    title: "Diaspora & OFW Remote Transparency",
-    description:
-      "Over 40% of our clients live and work abroad. Direct WhatsApp engineer lines, transparent milestone billing, and frequent video inspections keep you connected from thousands of miles away.",
+    title: "Institutional Loan Packaging",
+    detail:
+      "Full documentation assistance for accredited PAG-IBIG Fund home loans and major commercial bank mortgages.",
   },
 ];
 
 export default function About() {
   return (
-    <section id="about" className="relative bg-molave py-20 sm:py-28 overflow-hidden">
+    <section id="about" className="relative bg-molave py-24 sm:py-32">
       <div className="mx-auto max-w-6xl px-5 sm:px-8">
-        {/* Section Header */}
+        {/* Monograph Header */}
         <Reveal>
-          <div className="flex items-center gap-3">
-            <span className="h-px w-8 bg-ember" />
-            <span className="text-xs font-bold uppercase tracking-[0.25em] text-ember">
-              Who We Are
-            </span>
-          </div>
-
-          <div className="mt-4 grid grid-cols-1 gap-8 lg:grid-cols-12 lg:items-end">
-            <div className="lg:col-span-8">
-              <h2 className="font-display text-3xl font-extrabold tracking-tight text-iron sm:text-4xl lg:text-5xl">
-                Built on Integrity. <br className="hidden sm:inline" />
-                <span className="italic text-ember font-normal">Engineered</span> for Generations.
-              </h2>
-            </div>
-            <div className="lg:col-span-4">
-              <p className="text-sm font-medium uppercase tracking-[0.2em] text-iron/50">
-                Bacolod City &bull; Negros Occidental &bull; Iloilo City
-              </p>
-            </div>
-          </div>
-
-          <div className="mt-8 grid grid-cols-1 gap-10 border-t border-iron/10 pt-8 lg:grid-cols-12">
-            <div className="lg:col-span-7">
-              <p className="text-lg leading-relaxed text-iron/90 sm:text-xl sm:leading-relaxed">
-                Tristone Construction is a full-service residential and commercial
-                design-and-build firm headquartered in Bacolod City. Rooted in
-                structural excellence and regional craftsmanship, we transform raw
-                lots into architecturally striking, durable family homes.
-              </p>
-              <p className="mt-4 text-base leading-relaxed text-iron/75">
-                Our team — led by licensed Civil Engineer Judy Ann Parreñas Ardeña
-                alongside Cathyza Amolar Villaruz, Donna May Yatco, and Ryan — unites
-                architectural design, precision engineering, and transparent project
-                management under one roof. Our guiding promise,{" "}
-                <strong className="font-semibold text-iron">
-                  &ldquo;Quality Beyond Promises,&rdquo;
-                </strong>{" "}
-                means every foundation, rebar spacing, and bespoke finish is built
-                with the same care and discipline as if it were for our own family.
-              </p>
+          <div className="border-t border-iron/15 pt-8 sm:pt-10">
+            <div className="flex items-center justify-between text-[11px] font-semibold uppercase tracking-[0.25em] text-iron/50">
+              <span>About Tristone</span>
+              <span>Bacolod &bull; Iloilo</span>
             </div>
 
-            <div className="lg:col-span-5 flex flex-col justify-between gap-6 rounded-2xl border border-ember-dim/20 bg-capiz p-6 sm:p-8 shadow-[0_10px_30px_-15px_rgba(27,22,17,0.06)]">
-              <div>
-                <p className="text-xs font-bold uppercase tracking-[0.2em] text-ember-dim">
-                  Leadership Philosophy
+            <div className="mt-6 grid grid-cols-1 gap-8 lg:grid-cols-12 lg:items-start">
+              <div className="lg:col-span-5">
+                <h2 className="font-display text-3xl sm:text-4xl lg:text-[2.75rem] font-normal leading-[1.1] text-iron tracking-tight">
+                  Built on discipline. <br />
+                  <span className="italic text-ember font-normal">Engineered</span> for generations.
+                </h2>
+                <p className="mt-4 text-xs font-semibold uppercase tracking-[0.2em] text-ember-dim">
+                  Quality Beyond Promises
                 </p>
-                <blockquote className="mt-3 font-display text-base italic leading-relaxed text-iron/90 sm:text-lg">
-                  &ldquo;We don&apos;t take shortcuts on foundations or finishes.
-                  Every home we build is engineered with the exact care, prayer, and
+              </div>
+
+              <div className="lg:col-span-7 space-y-4 text-sm sm:text-base leading-relaxed text-iron/75 font-normal">
+                <p className="text-base sm:text-lg font-display text-iron leading-relaxed">
+                  Tristone Construction is a full-service residential and commercial
+                  design-build firm headquartered in Bacolod City, serving Negros
+                  Occidental and Iloilo City.
+                </p>
+                <p>
+                  Led on the ground by licensed Civil Engineer Judy Ann Parreñas Ardeña
+                  alongside Cathyza Amolar Villaruz, Donna May Yatco, and Ryan, we unite
+                  custom architectural planning, civil engineering, and transparent project
+                  management under one roof. We do not outsource supervision or cut
+                  corners on structural integrity.
+                </p>
+                <p className="text-xs sm:text-sm text-iron/60 border-l border-ember/30 pl-3 italic">
+                  &ldquo;Every home is engineered with the exact care, prayer, and structural
                   precision as if it were for our own family.&rdquo;
-                </blockquote>
-              </div>
-              <div className="border-t border-iron/10 pt-4">
-                <p className="font-display text-sm font-bold text-iron">
-                  Engr. Judy Ann Parreñas Ardeña
-                </p>
-                <p className="text-xs text-iron/60">
-                  Lead Civil Engineer &bull; Tristone Construction
                 </p>
               </div>
             </div>
           </div>
         </Reveal>
 
-        {/* Feature Image Banner: Team on Site */}
-        <Reveal className="mt-14">
-          <div className="relative overflow-hidden rounded-2xl border border-iron/10 bg-iron shadow-xl">
-            <div className="relative h-64 sm:h-80 md:h-96 w-full">
-              <Image
-                src="/images/projects/raphael-groundbreaking-team.jpg"
-                alt="Tristone Construction Engineering Team on site"
-                fill
-                quality={90}
-                sizes="(max-width: 1024px) 100vw, 1152px"
-                className="object-cover object-[50%_35%] opacity-90 transition-transform duration-700 hover:scale-[1.02]"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-iron via-iron/40 to-transparent" />
+        {/* Archival Photography Duo: Groundbreaking to Turnover */}
+        <Reveal className="mt-14 sm:mt-20">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-8">
+            <div>
+              <div className="relative aspect-[3/2] w-full overflow-hidden bg-iron/5">
+                <Image
+                  src="/images/projects/raphael-groundbreaking-team.jpg"
+                  alt="Tristone on-site engineering team at groundbreaking"
+                  fill
+                  quality={92}
+                  sizes="(max-width: 640px) 100vw, 560px"
+                  className="object-cover object-center transition-transform duration-700 hover:scale-[1.02]"
+                />
+              </div>
+              <p className="mt-3 text-[11px] text-iron/55 tracking-wide">
+                <span className="font-semibold text-iron/80">01 / Groundbreaking</span> &mdash; Engr. Judy Ann Ardeña &amp; on-site engineering team &bull; Project Raphael
+              </p>
             </div>
 
-            <div className="absolute inset-x-0 bottom-0 p-6 sm:p-8 flex flex-col sm:flex-row items-start sm:items-end justify-between gap-4">
+            <div>
+              <div className="relative aspect-[3/2] w-full overflow-hidden bg-iron/5">
+                <Image
+                  src="/images/projects/cleo-turnover-ribbon.jpg"
+                  alt="Ceremonial turnover and ribbon cutting of Project Cleo"
+                  fill
+                  quality={92}
+                  sizes="(max-width: 640px) 100vw, 560px"
+                  className="object-cover object-center transition-transform duration-700 hover:scale-[1.02]"
+                />
+              </div>
+              <p className="mt-3 text-[11px] text-iron/55 tracking-wide">
+                <span className="font-semibold text-iron/80">02 / Turnover</span> &mdash; Completed residence &amp; ceremonial ribbon cutting &bull; Project Cleo
+              </p>
+            </div>
+          </div>
+        </Reveal>
+
+        {/* The Methodology Ledger */}
+        <div className="mt-24 sm:mt-32">
+          <Reveal>
+            <div className="border-t border-iron/20 pt-8 sm:pt-10 flex flex-col sm:flex-row sm:items-baseline justify-between gap-4">
               <div>
-                <span className="inline-block rounded-full bg-ember px-3 py-1 text-xs font-bold uppercase tracking-wider text-white">
-                  Field Operations
-                </span>
-                <h3 className="mt-2 font-display text-xl sm:text-2xl font-bold text-capiz">
-                  Groundbreakings, Inspections &amp; Turnovers
+                <p className="text-[11px] font-semibold uppercase tracking-[0.25em] text-iron/50">
+                  Methodology
+                </p>
+                <h3 className="mt-2 font-display text-2xl sm:text-3xl font-normal text-iron">
+                  The Five-Stage Build Protocol
                 </h3>
-                <p className="mt-1 max-w-xl text-xs sm:text-sm text-capiz-dim/80">
-                  From initial soil-breaking to ceremonial key handovers, our
-                  engineering team remains on-site through every concrete pour.
-                </p>
               </div>
-
-              <div className="flex items-center gap-6 text-capiz">
-                <div>
-                  <p className="font-display text-2xl font-extrabold text-ember-light">
-                    100%
-                  </p>
-                  <p className="text-[11px] uppercase tracking-wider text-capiz-dim/70">
-                    Licensed Supervision
-                  </p>
-                </div>
-                <div className="h-8 w-px bg-capiz/20" />
-                <div>
-                  <p className="font-display text-2xl font-extrabold text-ember-light">
-                    Bacolod &amp; Iloilo
-                  </p>
-                  <p className="text-[11px] uppercase tracking-wider text-capiz-dim/70">
-                    Regional Footprint
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </Reveal>
-
-        {/* Pillars / Values Grid */}
-        <div className="mt-20">
-          <Reveal>
-            <div className="text-center sm:text-left">
-              <span className="text-xs font-bold uppercase tracking-[0.25em] text-ember-dim">
-                The Tristone Standard
-              </span>
-              <h3 className="mt-2 font-display text-2xl font-bold text-iron sm:text-3xl">
-                What Sets Our Work Apart
-              </h3>
+              <p className="text-xs font-mono uppercase tracking-wider text-iron/50">
+                Soil Survey &rarr; Turnkey Handover
+              </p>
             </div>
           </Reveal>
 
-          <div className="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
-            {pillars.map((p) => (
-              <Reveal
-                key={p.number}
-                className="group relative flex flex-col justify-between rounded-xl border border-iron/10 bg-capiz p-6 transition-all duration-300 hover:border-ember/40 hover:shadow-lg"
-              >
-                <div>
-                  <span className="font-display text-2xl font-bold text-ember-light/60 transition-colors duration-300 group-hover:text-ember">
-                    {p.number}
-                  </span>
-                  <h4 className="mt-3 font-display text-base font-bold text-iron transition-colors duration-300 group-hover:text-ember">
-                    {p.title}
-                  </h4>
-                  <p className="mt-2 text-xs leading-relaxed text-iron/70">
-                    {p.description}
-                  </p>
-                </div>
-                <div className="mt-4 pt-3 border-t border-iron/5">
-                  <span className="text-[10px] font-semibold uppercase tracking-wider text-ember-dim">
-                    Tristone Guarantee
-                  </span>
-                </div>
-              </Reveal>
-            ))}
-          </div>
-        </div>
-
-        {/* The Methodology Section */}
-        <div className="mt-24">
-          <Reveal>
-            <div className="border-t border-iron/10 pt-16">
-              <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
-                <div>
-                  <div className="flex items-center gap-3">
-                    <span className="h-px w-8 bg-ember" />
-                    <span className="text-xs font-bold uppercase tracking-[0.25em] text-ember">
-                      The Process
-                    </span>
-                  </div>
-                  <h3 className="mt-2 font-display text-2xl font-extrabold text-iron sm:text-3xl lg:text-4xl">
-                    Our 5-Step Construction Methodology
-                  </h3>
-                </div>
-                <p className="max-w-md text-xs sm:text-sm text-iron/70">
-                  Every home follows a strict, predictable roadmap from raw lot
-                  assessment to turnkey ribbon turnover.
-                </p>
-              </div>
-            </div>
-          </Reveal>
-
-          <div className="mt-10 space-y-4">
-            {methodologies.map((m, index) => (
-              <Reveal key={m.step}>
-                <div className="group rounded-2xl border border-iron/10 bg-capiz p-6 sm:p-8 transition-all duration-300 hover:border-ember/40 hover:shadow-md">
-                  <div className="grid grid-cols-1 gap-6 lg:grid-cols-12 lg:items-start">
-                    {/* Left: Step number and duration */}
-                    <div className="lg:col-span-3 flex items-center lg:flex-col lg:items-start justify-between">
-                      <div className="flex items-center gap-3">
-                        <span className="flex h-10 w-10 items-center justify-center rounded-full bg-molave-deep font-display text-sm font-bold text-iron group-hover:bg-ember group-hover:text-white transition-colors duration-300">
-                          {m.step}
-                        </span>
-                        <span className="text-xs font-bold uppercase tracking-wider text-ember-dim lg:hidden">
-                          {m.duration}
-                        </span>
-                      </div>
-                      <span className="hidden lg:inline-block mt-3 text-xs font-semibold uppercase tracking-wider text-ember-dim">
-                        {m.duration}
+          <div className="mt-6 divide-y divide-iron/10 border-b border-iron/10">
+            {protocols.map((p) => (
+              <Reveal key={p.num}>
+                <div className="group py-6 sm:py-8 transition-colors duration-200 hover:bg-iron/[0.015]">
+                  <div className="grid grid-cols-1 gap-3 lg:grid-cols-12 lg:items-baseline">
+                    {/* Index */}
+                    <div className="lg:col-span-3 flex items-baseline gap-3">
+                      <span className="font-display text-xs text-ember font-semibold">
+                        /{p.num}
+                      </span>
+                      <span className="text-[11px] font-semibold uppercase tracking-[0.2em] text-iron/50">
+                        {p.phase}
                       </span>
                     </div>
 
-                    {/* Middle: Title & summary */}
-                    <div className="lg:col-span-5">
-                      <h4 className="font-display text-lg sm:text-xl font-bold text-iron transition-colors duration-300 group-hover:text-ember">
-                        {m.title}
+                    {/* Content */}
+                    <div className="lg:col-span-6">
+                      <h4 className="font-display text-base sm:text-lg font-bold text-iron group-hover:text-ember transition-colors duration-200">
+                        {p.title}
                       </h4>
-                      <p className="mt-2 text-sm leading-relaxed text-iron/75">
-                        {m.summary}
+                      <p className="mt-1.5 text-xs sm:text-sm leading-relaxed text-iron/70">
+                        {p.description}
                       </p>
                     </div>
 
-                    {/* Right: Key Deliverables */}
-                    <div className="lg:col-span-4 rounded-xl border border-iron/5 bg-molave-deep/50 p-4">
-                      <p className="text-[11px] font-bold uppercase tracking-wider text-iron/50">
-                        Milestone Deliverables
-                      </p>
-                      <ul className="mt-2 space-y-1.5">
-                        {m.deliverables.map((deliv) => (
-                          <li
-                            key={deliv}
-                            className="flex items-start gap-2 text-xs text-iron/80"
-                          >
-                            <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-ember" />
-                            <span>{deliv}</span>
-                          </li>
-                        ))}
-                      </ul>
+                    {/* Deliverable */}
+                    <div className="lg:col-span-3 lg:text-right">
+                      <span className="inline-block text-[11px] text-iron/50 font-mono">
+                        {p.deliverable}
+                      </span>
                     </div>
                   </div>
                 </div>
@@ -334,24 +200,38 @@ export default function About() {
           </div>
         </div>
 
-        {/* Bottom CTA Banner */}
-        <Reveal className="mt-16 text-center">
-          <FretworkDivider className="mx-auto max-w-xs text-ember-dim" />
-          <div className="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
+        {/* Hallmarks & Consultation Link */}
+        <div className="mt-16 sm:mt-24 border-t border-iron/15 pt-12">
+          <div className="grid grid-cols-1 gap-8 sm:grid-cols-3">
+            {hallmarks.map((h, i) => (
+              <Reveal key={h.title}>
+                <div>
+                  <span className="text-[10px] font-mono text-iron/40 block">
+                    0{i + 1}
+                  </span>
+                  <h4 className="mt-2 font-display text-base font-bold text-iron">
+                    {h.title}
+                  </h4>
+                  <p className="mt-2 text-xs leading-relaxed text-iron/65">
+                    {h.detail}
+                  </p>
+                </div>
+              </Reveal>
+            ))}
+          </div>
+
+          <Reveal className="mt-12 pt-8 border-t border-iron/10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <p className="text-xs text-iron/60">
+              Ready to explore your lot or review financing eligibility?
+            </p>
             <a
               href="#contact"
-              className="inline-flex items-center justify-center gap-2 rounded-full bg-ember px-8 py-3.5 font-display text-sm font-bold text-white shadow-md transition-all hover:bg-ember-light hover:scale-[1.02]"
+              className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.2em] text-ember hover:text-ember-dim transition-colors"
             >
               Consult With Our Engineers &rarr;
             </a>
-            <a
-              href={`tel:${siteInfo.phone.replace(/-/g, "")}`}
-              className="inline-flex items-center justify-center gap-2 rounded-full border border-iron/20 bg-capiz px-7 py-3.5 text-sm font-semibold text-iron transition-colors hover:border-iron hover:bg-white"
-            >
-              Call {siteInfo.phone}
-            </a>
-          </div>
-        </Reveal>
+          </Reveal>
+        </div>
       </div>
     </section>
   );
